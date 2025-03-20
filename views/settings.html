@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <form action="/settings" method="post">
+        <h2>Dossiers a scanner :</h2>
+        <input name="repertoire" type="text" placeholder="Entrez le chemin jusqu'au dossier">
+        <button type="submit" name="action" value="add_repertoire">Ajouter</button>
+        <ul>
+            % for f in scan_dir:
+            <li>
+                <p>{{f}}</p>
+                <button type="submit" name="action" value="del_repertoire">
+                    Supprimer
+                </button>
+                <input type="hidden" name="dir_delete" value="{{f}}">
+            </li>
+            % end
+        </ul>
+        <h2>Options du viewer 3D :</h2>
+        <p>HDR selectionné : {{hdr}}</p>
+        <ul>
+            % for f in hdrs:
+            <li>
+                <p>{{f}}</p>
+                <button type="submit" name="action" value="select_hdr">
+                    Selectionner
+                </button>
+                <input type="hidden" name="hdrselect" value="{{f}}">
+            </li>
+            % end
+        </ul>
+        <button type="submit" name="action" value="remove_hdr">Supprimer</button>
+        <h2>Gestion des filtres :</h2>
+        <h3>Taille des textures :</h3>
+        <h2>Options globales :</h2>
+        <ul>
+            <li>
+                <input type="hidden" name="ignoreunknownfiles" value="False">
+                <input type="checkbox" name="ignoreunknownfiles" value="True" {{iuf}}>
+                <label>Ignorer les fichiers inconnus (ignore les fichiers de types inconnus lors du scan des fichiers)</label>
+            </li>
+            <li>
+                <input type="hidden" name="openwebpageonload" value="False">
+                <input type="checkbox" name="openwebpageonload" value="True" {{owpol}}>
+                <label>Ouvrir la page web au lancement du serveur</label>
+            </li>
+        </ul>
+        <button type="submit" name="action" value="save_global_options">Sauvegarder</button>
+    </form>
+    <p>OS : {{os}}</p>
+</body>
+</html>

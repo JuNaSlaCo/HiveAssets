@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiveAssets</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/styles.css">
+    <script type="text/javascript" src="/static/javascript/script.js"></script>
+</head>
+<body>
+    <iframe class="viewer" id="viewer" title="Model Loader Iframe" src="/model_loader_iframe/Texture/static/icons/HiveAssets.png"></iframe>
+    <div class="main">
+        <div class="filtres" id="filtres"> <!--partie des filtres -->
+            <form action="update" method="post">
+                <h2>Filtres</h2>
+                
+                <h3>Types d'assets</h3>
+                <ul>
+                    % for t in ASSETS_TYPES:
+                    <li>
+                        <input type="hidden" name="{{t}}" value="False">
+                        <input type="checkbox" name="{{t}}" value="True">
+                        <label>{{t}}</label>
+                    </li>
+                    % end
+                </ul>
+                
+                <h3>Types de fichier</h3>
+                <ul>
+                    <input type="checkbox" name="typef">
+                    <select name="type" id="">
+                        % for t in files_types:
+                        <option value="{{t}}">{{t}}</option>
+                        % end
+                    </select>
+                </ul>
+                
+                <h3>Size</h3>
+                <ul>
+                    <input type="checkbox">
+                    <select name="size" id="">
+                        % for ts in filtertexturessizes:
+                        <option value="{{ts}}">{{ts}}</option>
+                        % end
+                    </select>
+                </ul>
+                <button>Apply Filters</button>
+            </form>
+        </div>
+
+        <div class="doc" id="doc"><!--partie des docs-->
+
+            <button onclick="effacesettings()" class="settingsbtn">⚙Settings</button>
+            <h4>Partie des documents</h4>
+            
+            <div class="explorer">
+                % for l in liste_des_fichiers:
+                    %l[2] = l[2].replace("\\", "/")
+                <button title="{{l[2]}}" class="butimg" onclick='reloadiframe("/model_loader_iframe/{{l[1]}}/{{l[2]}}")'>
+                    <div class="filecontent">
+                        % if l[1] == "Texture":
+                            <img class="imgexplorer" src="/texturespreview/{{l[2]}}">
+                        % else:
+                            <img class="imgexplorer" src="/static/icons/unknown_file.png">
+                        % end
+                        <p class="filename">{{l[0]}}</p>
+                        <p class="filetype">{{l[1]}}</p>
+                    </div>
+                </button>
+                % end
+            </div>
+        </div>
+
+        <div id="settings" class="divsettings invisible">
+            <iframe title="settings" src="/settings" class="settings" ></iframe>
+        </div>
+        
+    </div>
+    <img src="/static/icons/HiveAssets.png" alt="logo" id="logo">
+    
+
+</body>
+</html>

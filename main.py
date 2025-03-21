@@ -31,7 +31,7 @@ TYPES_DE_FICHIERS = {
 DEFAULT_CONFIG = {
         "os": platform.system(),
         "scan_directory": [],
-        "3Dviewerhdrname": "",
+        "3Dviewerhdrname": "BaseHDR.hdr",
         "ignoreunknownfiles": True,
         "openwebpageonload": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"]
@@ -148,6 +148,10 @@ def home():
 def model_loader_iframe(type, path, filename):
     file_path = os.path.join(path, filename).replace("\\", "/")
     hdr = lire_config().get("3Dviewerhdrname", "")
+    print(os.path.exists(os.path.join("static/3dviewer/hdr/", hdr)), os.path.join("static/3dviewer/hdr/", hdr))
+    if not os.path.exists(os.path.join("static/3dviewer/hdr/", hdr)):
+        modifier_config("3Dviewerhdrname", "")
+        hdr = ""
     if type == "Texture":
         texture = file_path
         model = ""

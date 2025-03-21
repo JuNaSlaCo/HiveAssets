@@ -160,9 +160,22 @@ def model_loader_iframe(type, path, filename):
 
 @route('/settings', method=["GET", "POST"])
 def settings():
+    hdrs = []
     environmentos = lire_config().get("os", None)
-    hdrs = [f for f in os.listdir("./static/3dviewer/hdr") if os.path.isfile(os.path.join("./static/3dviewer/hdr", f))]
+    try:
+        if os.listdir("./static/3dviewer/hdr") != "":
+            for f in os.listdir("./static/3dviewer/hdr"):
+                file_extension = f.lower().split(".")[-1]
+                if file_extension == "hdr" or file_extension == "hdri":
+                    if os.path.isfile(os.path.join("./static/3dviewer/hdr", f)):
+                        hdrs.append(f)
+    except FileNotFoundError as e:
+        hdrs = []
+        print("Erreur :", e)
     hdr = lire_config().get("3Dviewerhdrname", "")
+    if hdr not in hdrs:
+        modifier_config("3Dviewerhdrname", "")
+        hdr = ""
     ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
     openwebpageonload = lire_config().get("openwebpageonload", True)
     dirconfig = list(lire_config().get("scan_directory", []))
@@ -186,13 +199,14 @@ def settings():
 
     elif action == "select_hdr":
         hdrselect = request.forms.get("hdrselect")
+        print(hdrselect)
         if hdrselect and hdrselect in hdrs:
             modifier_config("3Dviewerhdrname", hdrselect)
             hdr = lire_config().get("3Dviewerhdrname", None)
 
     elif action == "remove_hdr":
         modifier_config("3Dviewerhdrname", "")
-        hdr = lire_config().get("3Dviewerhdrname", "")
+        hdr = ""
 
     elif action == "save_global_options":
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)

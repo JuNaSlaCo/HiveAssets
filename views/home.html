@@ -18,8 +18,8 @@
                 <ul>
                     % for t in ASSETS_TYPES:
                     <li>
-                        <input type="hidden" name="{{t}}" value="False">
-                        <input type="checkbox" name="{{t}}" value="True">
+                        <input type="hidden" name="{{t}}" value="False" disabled>
+                        <input type="checkbox" name="{{t}}" value="True" disabled>
                         <label>{{t}}</label>
                     </li>
                     % end
@@ -27,8 +27,8 @@
                 
                 <h3>Types de fichier</h3>
                 <ul>
-                    <input type="checkbox" name="typef">
-                    <select name="type" id="">
+                    <input type="checkbox" name="typef" disabled>
+                    <select name="type" id="" disabled>
                         % for t in files_types:
                         <option value="{{t}}">{{t}}</option>
                         % end
@@ -37,14 +37,14 @@
                 
                 <h3>Size</h3>
                 <ul>
-                    <input type="checkbox">
-                    <select name="size" id="">
+                    <input type="checkbox" disabled>
+                    <select name="size" id="" disabled>
                         % for ts in filtertexturessizes:
                         <option value="{{ts}}">{{ts}}</option>
                         % end
                     </select>
                 </ul>
-                <button>Apply Filters</button>
+                <button disabled>Apply Filters</button>
             </form>
         </div>
 
@@ -59,9 +59,9 @@
                 <button title="{{l[2]}}" class="butimg" onclick='reloadiframe("/model_loader_iframe/{{l[1]}}/{{l[2]}}")'>
                     <div class="filecontent">
                         % if l[1] == "Texture":
-                            <img class="imgexplorer" src="/texturespreview/{{l[2]}}">
+                            <img class="imgexplorer" src="/texturespreview/{{l[2]}}" loading="lazy">
                         % else:
-                            <img class="imgexplorer" src="/static/icons/unknown_file.png">
+                            <img class="imgexplorer" src="/static/icons/unknown_file.png" loading="lazy">
                         % end
                         <p class="filename">{{l[0]}}</p>
                         <p class="filetype">{{l[1]}}</p>

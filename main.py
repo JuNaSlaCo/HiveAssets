@@ -1,6 +1,7 @@
 import os, json, platform, random, string
 from bottle import route, run, template, request, static_file
 from PIL import Image
+from urllib.parse import unquote, quote
 
 # Définition des variables
 
@@ -136,7 +137,10 @@ if not os.path.exists(fichier_cache):
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(DONNEES_CACHE, f, indent=4)
 if lire_config().get("openwebpageonload") == True:
-    os.system("start http://localhost:8080")
+    if platform.system() == "Windows":
+        os.system("start http://localhost:8080")
+    else :
+        os.system("open http://localhost:8080")
 
 # Définition des routes
 
@@ -146,9 +150,10 @@ def home():
 
 @route('/model_loader_iframe/<type>/<path:path>/<filename>')
 def model_loader_iframe(type, path, filename):
+    path = unquote(path)
+    filename = unquote(filename)
     file_path = os.path.join(path, filename).replace("\\", "/")
     hdr = lire_config().get("3Dviewerhdrname", "")
-    print(os.path.exists(os.path.join("static/3dviewer/hdr/", hdr)), os.path.join("static/3dviewer/hdr/", hdr))
     if not os.path.exists(os.path.join("static/3dviewer/hdr/", hdr)):
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
@@ -160,7 +165,7 @@ def model_loader_iframe(type, path, filename):
         model = file_path
     typef = type
     print(texture, typef)
-    return template("model_loader.html", hdr = hdr, model = model, texture = texture, typef = typef)
+    return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
 
 @route('/settings', method=["GET", "POST"])
 def settings():
@@ -203,7 +208,6 @@ def settings():
 
     elif action == "select_hdr":
         hdrselect = request.forms.get("hdrselect")
-        print(hdrselect)
         if hdrselect and hdrselect in hdrs:
             modifier_config("3Dviewerhdrname", hdrselect)
             hdr = lire_config().get("3Dviewerhdrname", None)
@@ -229,8 +233,9 @@ def settings():
 
 @route('/texturesfiles/<path:path>/<filename>')
 def textures_files(path, filename):
+    path = unquote(path)
+    filename = unquote(filename)
     file_path = os.path.join(path, filename)
-    print(path, filename, file_path)
     if not os.path.exists(file_path):
         return "Fichier introuvable", 404
     for l in lire_cachefile().get("preview_cache", None):

@@ -164,7 +164,6 @@ def model_loader_iframe(type, path, filename):
         texture = ""
         model = file_path
     typef = type
-    print(texture, typef)
     return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
 
 @route('/settings', method=["GET", "POST"])
@@ -206,23 +205,22 @@ def settings():
             dirconfig.remove(delete)
             modifier_config("scan_directory", dirconfig)
 
-    elif action == "select_hdr":
-        hdrselect = request.forms.get("hdrselect")
-        if hdrselect and hdrselect in hdrs:
-            modifier_config("3Dviewerhdrname", hdrselect)
-            hdr = lire_config().get("3Dviewerhdrname", None)
-
     elif action == "remove_hdr":
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
 
-    elif action == "save_global_options":
+    elif action == "save_options":
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)
         modifier_config("ignoreunknownfiles", bool(returnignoreunknownfiles == 'True'))
         ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
         returnopenwebpageonload = request.forms.get("openwebpageonload", False)
         modifier_config("openwebpageonload", bool(returnopenwebpageonload == 'True'))
         openwebpageonload = lire_config().get("openwebpageonload", True)
+
+        hdrselect = request.forms.get("select_hdr")
+        if hdrselect and hdrselect in hdrs:
+            modifier_config("3Dviewerhdrname", hdrselect)
+            hdr = lire_config().get("3Dviewerhdrname", None)
 
     if ignoreunknownfiles == False:
         iuf = ""

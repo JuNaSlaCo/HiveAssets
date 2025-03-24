@@ -1,12 +1,11 @@
-import os, json, platform, random, string, subprocess
+import os, json, platform, random, string
 from bottle import route, run, template, request, static_file
 from PIL import Image
 from urllib.parse import unquote, quote
 
 # Définition des variables
 
-# subprocess.Popen(f'explorer /select,"C:\Games\TMP\Prise finale.m4a"')
-
+system = platform.system()
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")
@@ -32,7 +31,7 @@ TYPES_DE_FICHIERS = { # Ici est défini tout les fichiers qui sont pris en charg
     "dae": "Mesh",
 }
 DEFAULT_CONFIG = { # Ici est défini la configuration par défaut du logiciel
-        "os": platform.system(),
+        "os": system,
         "scan_directory": [],
         "3Dviewerhdrname": "BaseHDR.hdr",
         "ignoreunknownfiles": True,
@@ -139,7 +138,7 @@ if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(DONNEES_CACHE, f, indent=4)
 if lire_config().get("openwebpageonload") == True: # Ouvre la page du navigateur si la configuration l'autorise
-    if platform.system() == "Windows": # Execute une commande différente en fonction de l'os installé sur la machine
+    if system == "Windows": # Execute une commande différente en fonction de l'os installé sur la machine
         os.system("start http://localhost:8080")
     else :
         os.system("open http://localhost:8080")
@@ -335,10 +334,34 @@ def textures_preview(path, filename):
 
     return static_file(filename, root=path)
 
-@route('/openfileonsystem/<path:path>/<filename>')
+@route('/openfileonsystem/<path:path>/<filename>') # Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si possible)
 def openfileonsystem(path, filename):
-    file_path = os.path.join(path, filename).replace("\\", "/")
-    os.open(file_path)
-
+    if system == "Windows":
+        file_path = unquote(os.path.join(path, filename).replace("/", "\\"))
+        os.system(f'explorer /select, "{file_path}"')
+    elif system == "Darwin":
+        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
+        os.system(["open", "-R", file_path])
+    elif system == "Linux":
+        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
+        try:
+            os.system(["nautilus", "--browser", file_path])
+        except:
+            os.system(f"open {file_path}")
+    else:
+        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
+        os.system(f"open {file_path}")
+    # Ferme la page web
+    return ''' 
+    <html>
+    <body>
+        <script>
+            window.onload = function() {
+                window.close();
+            };
+        </script>
+    </body>
+    </html>
+    '''
 # Lancement du serveur Bottle
 run(host="localhost", port="8080", debug=True, reloader=True)

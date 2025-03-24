@@ -10,3 +10,6 @@ function reloadiframe(url){
     const iframe = document.getElementById("viewer");
     iframe.src = url;
 }
+function openfileonsystem(url){
+    open(url)
+}

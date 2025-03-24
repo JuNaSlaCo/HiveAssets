@@ -1,16 +1,18 @@
-import os, json, platform, random, string
+import os, json, platform, random, string, subprocess
 from bottle import route, run, template, request, static_file
 from PIL import Image
 from urllib.parse import unquote, quote
 
 # Définition des variables
 
+# subprocess.Popen(f'explorer /select,"C:\Games\TMP\Prise finale.m4a"')
+
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")
 fichier_cache = os.path.join(dossier_config, "cache.json")
 cache_folder = os.path.join(dossier_config, "cache")
-TYPES_DE_FICHIERS = {
+TYPES_DE_FICHIERS = { # Ici est défini tout les fichiers qui sont pris en charge par le logiciel
     "jpg": "Texture",
     "jpeg": "Texture",
     "png": "Texture",
@@ -29,7 +31,7 @@ TYPES_DE_FICHIERS = {
     "glb": "Mesh",
     "dae": "Mesh",
 }
-DEFAULT_CONFIG = {
+DEFAULT_CONFIG = { # Ici est défini la configuration par défaut du logiciel
         "os": platform.system(),
         "scan_directory": [],
         "3Dviewerhdrname": "BaseHDR.hdr",
@@ -37,22 +39,22 @@ DEFAULT_CONFIG = {
         "openwebpageonload": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"]
 }
-DONNEES_SCAN = {
+DONNEES_SCAN = { # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
     "Textures" : [],
     "Mesh" : [],
     "Unknown" : []
 }
-ASSETS_TYPES = ["Textures", "Models"]
-DONNEES_CACHE = {
+ASSETS_TYPES = ["Textures", "Models"] # Ici est défini le type d'assets qui peut s'afficher dqns les filtres, n'est pas utile pour le moment
+DONNEES_CACHE = { # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement.
     "cache" : [],
     "preview_cache": []
 }
 
 # Définition des fonctions
 
-def verif_fichier_config():
-    os.makedirs(cache_folder, exist_ok=True)
+def verif_fichier_config(): # Cette fonction vérifie si les dossiers du logiciel existent, elle vérifie aussi si le fichier de configuration existe et est a jour, elle le met a jour si il manque des données. 
     os.makedirs(dossier_config, exist_ok=True)
+    os.makedirs(cache_folder, exist_ok=True)
     if not os.path.exists(fichier_config):
         with open(fichier_config, "w", encoding="utf-8") as f:
             json.dump(DEFAULT_CONFIG, f, indent=4)
@@ -73,11 +75,11 @@ def verif_fichier_config():
                 json.dump(config, f, indent=4)
             print("Fichier de configuration mis a jour !")
 
-def creer_scanfile():
+def creer_scanfile(): # Cette fonction crée le fichier de scan si il existe pas
     with open(fichier_config, "w", encoding="utf-8") as f:
         json.dump(DONNEES_SCAN, f, indent=4)
 
-def lire_config():
+def lire_config(): # Cette fonction permet de lire le fichier de configuration
     if os.path.exists(fichier_config):
         with open(fichier_config, "r", encoding="utf-8") as f:
             try: 
@@ -89,7 +91,7 @@ def lire_config():
     else:
         return None
     
-def lire_cachefile():
+def lire_cachefile(): # Cette fonction permet de lire le fichier de cache
     if os.path.exists(fichier_cache):
         with open(fichier_cache, "r", encoding="utf-8") as f:
             try: 
@@ -101,7 +103,7 @@ def lire_cachefile():
     else:
         return None
     
-def modifier_config(cle, valeur):
+def modifier_config(cle, valeur): # Cette fonction permet de modifier le fichier de configuration
     config = lire_config()
     if config is None:
         config = {}
@@ -109,7 +111,7 @@ def modifier_config(cle, valeur):
     with open(fichier_config, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=4)
 
-def modifier_cachefile(cle, valeur):
+def modifier_cachefile(cle, valeur): # Cette fonction permet de modifier le fichier de cache
     cache = lire_cachefile()
     if cache is None:
         cache = {}
@@ -117,7 +119,7 @@ def modifier_cachefile(cle, valeur):
     with open(fichier_cache, "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=4)
 
-def liste_des_fichiers():
+def liste_des_fichiers(): # Cette fonction permet de faire une liste de tout les fichiers se trouvant dans les dossiers a scanner (Ces dossiers sont enregistrés dans le fichier de configuration)
     list = []
     for dir in lire_config().get("scan_directory", []):
         for chemin, dir, fichiers in os.walk(dir):
@@ -133,11 +135,11 @@ def liste_des_fichiers():
 # Autre code
 
 verif_fichier_config()
-if not os.path.exists(fichier_cache):
+if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(DONNEES_CACHE, f, indent=4)
-if lire_config().get("openwebpageonload") == True:
-    if platform.system() == "Windows":
+if lire_config().get("openwebpageonload") == True: # Ouvre la page du navigateur si la configuration l'autorise
+    if platform.system() == "Windows": # Execute une commande différente en fonction de l'os installé sur la machine
         os.system("start http://localhost:8080")
     else :
         os.system("open http://localhost:8080")

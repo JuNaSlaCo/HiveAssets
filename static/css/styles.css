@@ -33,11 +33,13 @@ html, body {
 .filtres {
     max-width: 18%;
     width: 18%;
-    overflow-y: auto;
     background: #f4f4f4;
     padding: 10px;
     box-sizing: border-box;
     border-right: 5px solid black;
+    color: #707070;
+    background-color: rgb(34, 34, 34);
+    overflow-y: auto;
 }
 .filtres2 {
     width: 19%;
@@ -79,10 +81,6 @@ h4{
     padding: 10px;
     box-sizing: border-box;
     background-color: rgb(48, 46, 46);
-}
-.filtres {
-    background-color: rgb(48, 46, 46);
-    overflow-y: auto;
 }
 .settingsbtn{
     margin-left: 90%;

@@ -14,7 +14,12 @@
 <body>
     <form action="/settings" method="post">
         <h2>Dossiers a scanner :</h2>
-        <input name="repertoire" type="text" placeholder="Entrez le chemin jusqu'au dossier">
+        <input name="repertoire" type="text" 
+        % if os == "Windows":
+        placeholder='"C:\Users\Prod\Assets\"'>
+        % else:
+        placeholder='"/home/Freddy/Prod_Assets/"'>
+        % end
         <button type="submit" name="action" value="add_repertoire">Ajouter</button>
         <ul>
             % for f in scan_dir:

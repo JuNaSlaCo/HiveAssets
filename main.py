@@ -166,7 +166,7 @@ def recherche():
             fich_trouv = file_list
         return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
 
-@route('/model_loader_iframe/<type>/<path:path>/<filename>')
+@route('/model_loader_iframe/<type>/<path:path>/<filename>') # Permet d'afficher le viewer 3D pour visualiser les assets visuels
 def model_loader_iframe(type, path, filename):
     path = unquote(path)
     filename = unquote(filename)
@@ -184,7 +184,7 @@ def model_loader_iframe(type, path, filename):
     typef = type
     return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
 
-@route('/settings', method=["GET", "POST"])
+@route('/settings', method=["GET", "POST"]) # Permet de configurer le logiciel
 def settings():
     hdrs = []
     environmentos = lire_config().get("os", None)
@@ -247,7 +247,7 @@ def settings():
     
     return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, owpol = owpol)
 
-@route('/texturesfiles/<path:path>/<filename>')
+@route('/texturesfiles/<path:path>/<filename>') # Permet de renvoyer l'image originale demandée ou l'image convertie
 def textures_files(path, filename):
     path = unquote(path)
     filename = unquote(filename)
@@ -296,13 +296,13 @@ def textures_files(path, filename):
 
 # Route vers les dossiers contenus dans static
 
-@route('/static/<path:path>/<filename>')
+@route('/static/<path:path>/<filename>') # Permet d'obtenir un fichier grâce a son lien
 def server_static(path, filename):
     return static_file(filename, root=('./static/' + path))
 
 # Route pour les previews des textures sur la page web
 
-@route('/texturespreview/<path:path>/<filename>')
+@route('/texturespreview/<path:path>/<filename>') # Permet d'obtenir une image a prévisualiser, si le format est inconnu le fichier est converti avec une taille de 128px par 128px
 def textures_preview(path, filename):
     file_path = os.path.join(path, filename).replace("\\", "/")
 

@@ -362,13 +362,13 @@ def openfileonsystem(path, filename):
     elif system == "Linux":
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
-        if environnement == "gnome":
+        if "gnome" in environnement :
             os.system("nautilus --browser " + file_path)
-        elif environnement == "xfce":
+        elif "xcfe" in environnement :
             os.system("thunar " + file_path)
-        elif environnement == "lxde":
+        elif "lxde" in environnement :
             os.system("pacmanfm " + file_path)
-        elif environnement == "cinnamon":
+        elif "cinnamon" in environnement :
             os.system("nemo " + file_path)
         else:
             os.system("xdg-open " + file_path)

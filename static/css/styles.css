@@ -1,16 +1,28 @@
-#bar_rec{
-    box-shadow: 10px 10px 10px;
+.bar_rec{
     max-width: 350px;
-    border-radius: 5px;
-    input{
-        border: 2px;
-        width: 300px;
-    }
-    button{
-         background-color: red;
-         border: None;
-    }
+    border-radius: 15px;
 }
+
+.barr{
+    width: 300px;
+    background-color: gray;
+    border: rgb(0, 0, 0) 2px solid;
+}
+.but{
+    background-color: gray;
+    border: black 3px solid;
+}
+
+.barr:focus{
+    animation: clignotement 1.5s infinite;
+}
+
+@keyframes clignotement {
+    0% { border-color: red; }
+    50% { border-color: transparent; }
+    100% { border-color: red; }
+}
+
 html, body {
     font-family: 'Poppins', sans-serif;
     height: 100%;

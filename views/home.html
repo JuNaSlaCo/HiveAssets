@@ -52,9 +52,10 @@
         <div class="doc" id="doc"><!--partie des docs-->
 
             <button onclick="effacesettings()" class="settingsbtn">⚙Settings</button>
+            
             <form class="bar_rec" action="/recherche" method="POST">
-                <input type="text" autofocus placeholder="Entrez votre recherche">
-                <button>🔍</button>
+                <input name="search_query" type="text" autofocus placeholder="Entrez votre recherche">
+                <button type="submit">🔍</button>
             </form>
             
             <div class="explorer">

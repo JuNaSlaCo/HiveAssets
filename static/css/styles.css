@@ -1,10 +1,10 @@
 #bar_rec{
     box-shadow: 10px 10px 10px;
-    max-width: 240px;
+    max-width: 350px;
     border-radius: 5px;
     input{
         border: 2px;
-        width: 200px;
+        width: 300px;
     }
     button{
          background-color: red;

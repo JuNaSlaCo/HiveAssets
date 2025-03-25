@@ -52,7 +52,10 @@
         <div class="doc" id="doc"><!--partie des docs-->
 
             <button onclick="effacesettings()" class="settingsbtn">⚙Settings</button>
-            <h4>Partie des documents</h4>
+            <form class="bar_rec" action="/recherche" method="post">
+            <input type="text" autofocus placeholder="Entrez votre recherche">
+            <button>🔍</button>
+            </form>
             
             <div class="explorer">
                 % for l in liste_des_fichiers:

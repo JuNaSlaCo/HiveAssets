@@ -361,13 +361,20 @@ def openfileonsystem(path, filename):
         os.system(["open", "-R", file_path])
     elif system == "Linux":
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
-        try:
+        environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
+        if environnement == "gnome":
             os.system("nautilus --browser " + file_path)
-        except:
-            os.system(f"xpg-open {file_path}")
+        elif environnement == "xfce":
+            os.system("thunar " + file_path)
+        elif environnement == "lxde":
+            os.system("pacmanfm " + file_path)
+        elif environnement == "cinnamon":
+            os.system("nemo " + file_path)
+        else:
+            os.system("xdg-open " + file_path)
     else:
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
-        os.system(f"xpg-open {file_path}")
+        os.system("xdg-open " + file_path)
     # Renvoie un script js pour fermer la page web
     return ''' 
     <html>

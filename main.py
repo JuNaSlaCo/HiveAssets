@@ -149,20 +149,19 @@ if lire_config().get("openwebpageonload") == True: # Ouvre la page du navigateur
 def home():
     return template("home.html", liste_des_fichiers = liste_des_fichiers(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
 
-@route('/recherche', methods=['POST'])
+@route('/recherche', methods=['POST', 'GET'])
 def recherche():
     search_query = request.form['search_query'] # recupere ce qui est taper dans le formulaire
     if not search_query or liste_des_fichiers!=search_query: #si il n'y a pas de recherche ou que le fichier rechercher n'existe pas
         # ca sort tout les trucs qu'il y a
         return template("home.html", liste_des_fichiers = liste_des_fichiers(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
     else:
-        
         fich_trouv=[] #sinon ca cree une liste
         for fi in liste_des_fichiers():#boucle d'explo
             if search_query.lower() in f.lower():#si la recherche en minuscule est dans le fichier ca l'apprend a la 
                 #liste et a la fin ca sort juste la liste
                 fich_trouv.append(f)
-        return template("home.html", liste_des_fichiers = fich_trouv(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
+        return template("home.html", liste_des_fichiers = fich_trouv(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
 
 @route('/model_loader_iframe/<type>/<path:path>/<filename>')
 def model_loader_iframe(type, path, filename):
@@ -362,10 +361,10 @@ def openfileonsystem(path, filename):
         try:
             os.system(["nautilus", "--browser", file_path])
         except:
-            os.system(f"open {file_path}")
+            os.system(f"xpg-open {file_path}")
     else:
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
-        os.system(f"open {file_path}")
+        os.system(f"xpg-open {file_path}")
     # Ferme la page web
     return ''' 
     <html>

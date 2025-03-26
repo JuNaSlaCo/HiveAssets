@@ -95,7 +95,7 @@ h4{
     overflow-y: scroll;
     box-sizing: border-box;
     text-align: center;
-    max-height: 85%;
+    max-height: 90%;
     display: flex;
     flex-wrap: wrap;
     padding: 1vh;

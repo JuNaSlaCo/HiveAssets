@@ -1,5 +1,5 @@
 import os, json, platform, random, string
-from bottle import route, run, template, request, static_file
+from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from urllib.parse import unquote, quote
 from constants import *
@@ -21,7 +21,7 @@ def lire_cachefile(): # Cette fonction permet de lire le fichier de cache
                 out = json.load(f)
             return out
     else:
-        return None
+        return dict()
 
 def modifier_cachefile(cle, valeur): # Cette fonction permet de modifier le fichier de cache
     cache = lire_cachefile()
@@ -162,13 +162,16 @@ def settings():
 
 @route('/texturesfiles/<path:path>/<filename>') # Permet de renvoyer l'image originale demandée ou l'image convertie
 def textures_files(path, filename):
-    path = os.path.join(*unquote("path").split("/"))
+    path = os.path.join(*unquote(path).split("/"))
     filename = unquote(filename)
-    file_path = os.path.join(basedir, path, filename)
+    file_path = os.path.join(datadir, path, filename)
     print(file_path)
+    print(filename)
+    print(os.path.exists(file_path))
     if not os.path.exists(file_path):
-        return "Fichier introuvable", 404
-    for l in lire_cachefile().get("preview_cache", None):
+        raise HTTPResponse("non trouvé", status=404)
+    print(lire_cachefile().get("preview_cache", list()))
+    for l in lire_cachefile().get("preview_cache", list()):
         print(l)
         if file_path in l:
             for k, v in l.items():
@@ -206,7 +209,7 @@ def textures_files(path, filename):
             
         except Exception as e:
             return "Erreur {e}", 500
-    return static_file(filename, root=path)
+    return static_file(filename, root=os.path.dirname(file_path))
 
 # Route vers les dossiers contenus dans static
 

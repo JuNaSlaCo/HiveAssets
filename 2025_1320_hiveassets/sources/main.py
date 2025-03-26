@@ -165,21 +165,15 @@ def textures_files(path, filename):
     path = os.path.join(*unquote(path).split("/"))
     filename = unquote(filename)
     file_path = os.path.join(datadir, path, filename)
-    print(file_path)
-    print(filename)
-    print(os.path.exists(file_path))
     if not os.path.exists(file_path):
         raise HTTPResponse("non trouvé", status=404)
-    print(lire_cachefile().get("preview_cache", list()))
     for l in lire_cachefile().get("preview_cache", list()):
-        print(l)
         if file_path in l:
             for k, v in l.items():
                 if not os.path.exists(v):
                     break
                 else:
                     return static_file(v, root=cache_folder)
-    print(file_path)
     extension = filename.lower().split('.')[-1]
     types = ["tif", "tiff", "tga", "dds", "exr"]
 
@@ -224,8 +218,8 @@ def textures_preview(path, filename):
     file_path = os.path.join(path, filename).replace("\\", "/")
 
     if not os.path.exists(file_path):
-        return "Fichier introuvable", 404
-    for l in lire_cachefile().get("cache", None):
+        raise HTTPResponse("non trouvé", status=404)
+    for l in lire_cachefile().get("cache", list()):
         if file_path in l:
             for k, v in l.items():
                 if not os.path.exists(v):

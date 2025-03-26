@@ -1,4 +1,4 @@
-const effacesettings = () => {
+const settings = () => {
     const s = document.getElementById("settings");
     s.classList.toggle("invisible");
     const e = document.getElementById("doc");

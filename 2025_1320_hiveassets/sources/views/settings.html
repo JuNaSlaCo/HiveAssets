@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body{
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <form action="/settings" method="post">
+        <h2>Dossiers a scanner :</h2>
+        <input name="repertoire" type="text" 
+        % if os == "Windows":
+        placeholder='"C:\Users\Prod\Assets\"'>
+        % else:
+        placeholder='"/home/Freddy/Prod_Assets/"'>
+        % end
+        <button type="submit" name="action" value="add_repertoire">Ajouter</button>
+        <ul>
+            % for f in scan_dir:
+            <li>
+                <p>{{f}}</p>
+                <button type="submit" name="action" value="del_repertoire">
+                    Supprimer
+                </button>
+                <input type="hidden" name="dir_delete" value="{{f}}">
+            </li>
+            % end
+        </ul>
+        <h2>Options du viewer 3D :</h2>
+        <select name="select_hdr">
+            % for f in hdrs:
+                % if f == hdr:
+            <option value="{{f}}" selected>{{f}}</option>
+                % else:
+            <option value="{{f}}">{{f}}</option>
+                % end
+            % end
+            % if hdrs == "":
+            <option value="">Aucun HDR installé</option>
+            % end
+            % if hdr == "":
+            <option value="" selected>Aucun HDR selectionné</option>
+            % end
+        </select>
+        <button type="submit" name="action" value="remove_hdr">Retirer</button>
+        <h2 style="display: none;">Gestion des filtres :</h2>
+        <h3 style="display: none;">Taille des textures :</h3>
+        <h2>Options globales :</h2>
+        <ul>
+            <li>
+                <input type="hidden" name="ignoreunknownfiles" value="False">
+                <input type="checkbox" name="ignoreunknownfiles" value="True" {{iuf}}>
+                <label>Ignorer les fichiers inconnus (ignore les fichiers de types inconnus lors du scan des fichiers)</label>
+            </li>
+            <li>
+                <input type="hidden" name="openwebpageonload" value="False">
+                <input type="checkbox" name="openwebpageonload" value="True" {{owpol}}>
+                <label>Ouvrir la page web au lancement du serveur</label>
+            </li>
+        </ul>
+        <button type="submit" name="action" value="save_options">Sauvegarder</button>
+    </form>
+    <p>OS : {{os}}</p>
+</body>
+</html>

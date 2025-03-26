@@ -1,0 +1,190 @@
+.bar_rec{
+    max-width: 100%;
+}
+.div_bar_rec{
+    max-width: 100%;
+    background-color: #000;
+    padding: 3px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    border-radius: 7px;
+    border:#fff;
+}
+.div_bar_rec:hover{
+    border: #bbb;
+}
+.barr{
+    flex: 1;
+    width: 80%;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: medium;
+    outline: none;
+}
+.but{
+    border: none;
+    padding-right: 2px;
+    background: none;
+    cursor: pointer;
+}
+html, body {
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    margin: 0px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+.viewer {
+    height: 55vh;
+    width: 100%;
+    border: none;
+    display: block;
+}
+.main {
+    height: 45vh;
+    display: flex;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgb(48, 46, 46);
+}
+#logo{
+    width: 90px;
+    height: 90px;
+    position : absolute;
+    left: 25px;
+    top: 25px;
+    border-radius: 100%;
+}
+.filtres {
+    max-width: 18%;
+    width: 18%;
+    background: #f4f4f4;
+    padding: 10px;
+    box-sizing: border-box;
+    border-right: 5px solid black;
+    color: #707070;
+    background-color: rgb(24, 24, 24);
+    overflow-y: auto;
+}
+.filtres2 {
+    width: 19%;
+}
+h2, h3{
+    background-color: gray;
+    text-align: center;
+    border-radius: 10px;
+}
+h4{
+    margin: 10px;
+}
+.doc {
+    width: 82%;
+    padding: 10px;
+    background-color: rgb(36, 36, 36);
+}
+.doc2 {
+    width: 64%;
+}
+.explorer{
+    overflow-y: scroll;
+    box-sizing: border-box;
+    text-align: center;
+    max-height: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1vh;
+    justify-content: flex-start;
+    gap: 10px;
+}
+.divsettings {
+    width: 18%;
+}
+.settings {
+    overflow-y: auto;
+    background: #bbb;
+    color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: rgb(36, 36, 36);
+}
+.settingsbtn{
+    margin-right: 10px;
+    margin-left: 5px;
+    background: none;
+    border-radius: 10px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+.settingsbtn:hover{
+    background-color: rgb(68, 68, 68)
+}
+.settings {
+    width: 100%;
+    height: 100%;
+}
+.imgexplorer{
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.butimg{
+    width: 155px;
+    height: 185px;
+    display: flex;
+    box-shadow: 2px 2px 5px rgb(0, 0, 0, 0.5);
+    background-color: rgb(56, 56, 56);
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+.butimg:hover{
+    background-color: rgb(87, 87, 87);
+}
+.filename {
+    font-size: 14px;
+    color: white;
+    margin-top: 5px;
+    width: 90%;
+    text-align: center;
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.filetype {
+    font-size: 14px;
+    color: #949494;
+    text-align: left;
+    bottom: 100%;
+    left: 10px;
+    margin: 0;
+    min-width: 90%;
+    max-width: 90%;
+}
+.filecontent{
+    width: 100%;
+    height: 100%;
+}
+
+.invisible {
+    display: none;
+}
+.utils{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}

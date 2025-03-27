@@ -85,6 +85,9 @@ def model_loader_iframe(type, path, filename):
     filename = unquote(filename)
     file_path = os.path.join(path, filename).replace("\\", "/")
     hdr = lire_config().get("3Dviewerhdrname", "")
+    if path == '"LOGO"' and filename == '"LOGO"':
+        file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
+        print("Msg : ", file_path)
     if not os.path.exists(os.path.join(hdr_dir, hdr)):
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
@@ -162,15 +165,14 @@ def settings():
 
 @route('/texturesfiles/<path:path>/<filename>') # Permet de renvoyer l'image originale demandée ou l'image convertie
 def textures_files(path, filename):
-    path = os.path.join(*unquote(path).split("/"))
+    print(filename, path)
+    path = os.sep.join([*unquote(path).split("/")])
     filename = unquote(filename)
-    if system == "Windows":
-        file_path = os.path.join(datadir, path, filename)
-    else:
-        file_path = os.path.join("/", path, filename)
+    print(filename, path)
+    file_path = os.path.join("\\", path, filename)
     print(file_path)
-    print(path, filename)
     if not os.path.exists(file_path):
+        print("404")
         raise HTTPResponse("non trouvé", status=404)
     for l in lire_cachefile().get("preview_cache", list()):
         if file_path in l:

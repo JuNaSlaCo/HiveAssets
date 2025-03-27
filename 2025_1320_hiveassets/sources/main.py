@@ -164,7 +164,10 @@ def settings():
 def textures_files(path, filename):
     path = os.path.join(*unquote(path).split("/"))
     filename = unquote(filename)
-    file_path = os.path.join("/", path, filename)
+    if system == "Windows":
+        file_path = os.path.join(datadir, path, filename)
+    else:
+        file_path = os.path.join("/", path, filename)
     print(file_path)
     print(path, filename)
     if not os.path.exists(file_path):

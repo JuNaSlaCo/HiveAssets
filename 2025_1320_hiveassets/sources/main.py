@@ -164,7 +164,9 @@ def settings():
 def textures_files(path, filename):
     path = os.path.join(*unquote(path).split("/"))
     filename = unquote(filename)
-    file_path = os.path.join(datadir, path, filename)
+    file_path = os.path.join("/", path, filename)
+    print(file_path)
+    print(path, filename)
     if not os.path.exists(file_path):
         raise HTTPResponse("non trouvé", status=404)
     for l in lire_cachefile().get("preview_cache", list()):
@@ -273,6 +275,7 @@ def openfileonsystem(path, filename):
     elif system == "Linux":
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
+        print(environnement)
         if "gnome" in environnement :
             os.system("nautilus --browser " + file_path)
         elif "xcfe" in environnement :
@@ -281,6 +284,8 @@ def openfileonsystem(path, filename):
             os.system("pacmanfm " + file_path)
         elif "cinnamon" in environnement :
             os.system("nemo " + file_path)
+        if "unity" in environnement :
+            os.system("nautilus --browser " + file_path)
         else:
             os.system("xdg-open " + file_path)
     else:

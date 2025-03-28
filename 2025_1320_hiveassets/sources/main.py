@@ -320,7 +320,7 @@ def openfileonsystem(path, filename):
         os.system(f'explorer /select, "{file_path}"')
     elif system == "Darwin":
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
-        os.system(["open", "-R", file_path])
+        os.system(f'open -R "{file_path}"')
     elif system == "Linux":
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()

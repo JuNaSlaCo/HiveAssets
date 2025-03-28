@@ -1,3 +1,5 @@
+#Projet : HiveAssets
+#Auteurs : Judicaël Lenglet, Ewan Jannot, Joan Molle, Maël Pouvreau
 """
 ici se trouve toutes les routes ainsi que des fonctions
 """
@@ -248,7 +250,7 @@ def textures_files(path, filename):
 """
 route qui permet d'obtenir un fichier grâce a son lien
 :return: renvoie un fichier contenu dans le dossier static du programme
-""""
+"""
 @route('/static/<path:path>/<filename>') 
 def server_static(path, filename):
     return static_file(filename, root=os.path.join(static_dir, path))

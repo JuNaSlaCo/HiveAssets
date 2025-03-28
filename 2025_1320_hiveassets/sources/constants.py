@@ -1,3 +1,5 @@
+#Projet : HiveAssets
+#Auteurs : Judicaël Lenglet, Ewan Jannot, Joan Molle, Maël Pouvreau
 import os, platform
 """
 Définition de toutes les variables

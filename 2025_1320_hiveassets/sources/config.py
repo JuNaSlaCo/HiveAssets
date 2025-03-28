@@ -1,3 +1,5 @@
+#Projet : HiveAssets
+#Auteurs : Judicaël Lenglet, Ewan Jannot, Joan Molle, Maël Pouvreau
 from constants import *
 import json, os
 def verif_fichier_config(): 

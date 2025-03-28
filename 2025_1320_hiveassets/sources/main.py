@@ -353,4 +353,4 @@ def openfileonsystem(path, filename):
     </html>
     '''
 # Execution du serveur Bottle
-run(host="localhost", port="8080", debug=True, reloader=True)
+run(host="localhost", port="8080")

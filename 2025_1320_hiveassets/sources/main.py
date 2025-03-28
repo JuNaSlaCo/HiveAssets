@@ -282,20 +282,20 @@ def openfileonsystem(path, filename):
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
         print(environnement)
         if "gnome" in environnement :
-            os.system("nautilus --browser " + file_path)
+            os.system(f'nautilus --browser "{file_path}"')
         elif "xcfe" in environnement :
-            os.system("thunar " + file_path)
+            os.system(f'thunar "{file_path}')
         elif "lxde" in environnement :
-            os.system("pacmanfm " + file_path)
+            os.system(f'pacmanfm "{file_path}"')
         elif "cinnamon" in environnement :
-            os.system("nemo " + file_path)
+            os.system(f'nemo "{file_path}"')
         if "unity" in environnement :
-            os.system("nautilus --browser " + file_path)
+            os.system(f'nautilus --browser "{file_path}"')
         else:
-            os.system("xdg-open " + file_path)
+            os.system(f'xdg-open "{file_path}"')
     else:
         file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
-        os.system("xdg-open " + file_path)
+        os.system(f'xdg-open "{file_path}"')
     # Renvoie un script js pour fermer la page web
     return ''' 
     <html>

@@ -9,10 +9,6 @@
   "keywords": [],
   "author": "JuNaSlaCo",
   "license": "ISC",
-  "description": "Ce projet a été testé sur la version de python 3.10 et plus.",
-  "directories": {
-    "doc": "docs"
-  },
   "devDependencies": {
     "electron": "^35.1.2"
   }

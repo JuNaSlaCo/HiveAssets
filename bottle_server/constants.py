@@ -5,6 +5,7 @@ import os, platform
 Définition de toutes les variables
 """
 system = platform.system()
+serverport = 0
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")

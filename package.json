@@ -1,0 +1,19 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "JuNaSlaCo",
+  "license": "ISC",
+  "description": "Ce projet a été testé sur la version de python 3.10 et plus.",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "electron": "^35.1.2"
+  }
+}

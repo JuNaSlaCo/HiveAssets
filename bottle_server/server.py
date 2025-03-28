@@ -5,7 +5,7 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, platform, random, string
+import os, json, random, string, socket
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from urllib.parse import unquote, quote
@@ -13,6 +13,14 @@ from constants import *
 from config import *
 
 # Définition des fonctions
+
+def server_port():
+    global serverport
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 0))
+    _, serverport = sock.getsockname()
+    sock.close()
+    print(serverport)
 
 # Cette fonction crée le fichier de scan si il n'existe pas
 def creer_scanfile(): 
@@ -61,15 +69,11 @@ def liste_des_fichiers():
 
 # Autre code
 
+server_port()
 verif_fichier_config()
 if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(DONNEES_CACHE, f, indent=4)
-if lire_config().get("openwebpageonload") == True: # Ouvre la page du navigateur si la configuration l'autorise
-    if system == "Windows": # Execute une commande différente en fonction de l'os installé sur la machine
-        os.system("start http://localhost:8080")
-    else :
-        os.system("open http://localhost:8080")
 
 # Définition des routes
 
@@ -349,4 +353,4 @@ def openfileonsystem(path, filename):
     </html>
     '''
 # Execution du serveur Bottle
-run(host="localhost", port="8080")
+run(host="localhost", port=serverport)

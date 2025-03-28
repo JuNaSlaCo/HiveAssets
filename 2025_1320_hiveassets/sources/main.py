@@ -1,3 +1,8 @@
+"""
+ici se trouve toutes les routes ainsi que des fonctions
+"""
+
+# les importations necessaire au bon fonctionnement du site
 import os, json, platform, random, string
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
@@ -7,11 +12,13 @@ from config import *
 
 # Définition des fonctions
 
-def creer_scanfile(): # Cette fonction crée le fichier de scan si il existe pas
+# Cette fonction crée le fichier de scan si il n'existe pas
+def creer_scanfile(): 
     with open(fichier_config, "w", encoding="utf-8") as f:
         json.dump(DONNEES_SCAN, f, indent=4)
     
-def lire_cachefile(): # Cette fonction permet de lire le fichier de cache
+# Cette fonction permet de lire le fichier de cache
+def lire_cachefile(): 
     if os.path.exists(fichier_cache):
         with open(fichier_cache, "r", encoding="utf-8") as f:
             try: 
@@ -23,7 +30,8 @@ def lire_cachefile(): # Cette fonction permet de lire le fichier de cache
     else:
         return dict()
 
-def modifier_cachefile(cle, valeur): # Cette fonction permet de modifier le fichier de cache
+# Cette fonction permet de modifier le fichier de cache
+def modifier_cachefile(cle, valeur): 
     cache = lire_cachefile()
     if cache is None:
         cache = {}
@@ -31,7 +39,12 @@ def modifier_cachefile(cle, valeur): # Cette fonction permet de modifier le fich
     with open(fichier_cache, "w", encoding="utf-8") as f:
         json.dump(cache, f, indent=4)
 
-def liste_des_fichiers(): # Cette fonction permet de faire une liste de tout les fichiers se trouvant dans les dossiers a scanner (Ces dossiers sont enregistrés dans le fichier de configuration)
+"""
+Cette fonction permet de faire une liste de tout les fichiers se trouvant dans les dossiers a scanner 
+(Ces dossiers sont enregistrés dans le fichier de configuration)
+:return: renvoit la liste des fichiers present dans le dossier
+"""
+def liste_des_fichiers(): 
     list = []
     for dir in lire_config().get("scan_directory", []):
         for chemin, dir, fichiers in os.walk(dir):
@@ -58,28 +71,39 @@ if lire_config().get("openwebpageonload") == True: # Ouvre la page du navigateur
 
 # Définition des routes
 
+"""
+route vers la page d'accueil
+:return: la page d'accueil du site
+"""
 @route('/')
 def home():
     return template("home.html", liste_des_fichiers = liste_des_fichiers(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
 
+"""
+route de la barre de recherche
+recupere ce qui est taper dans le formulaire (barre de recherche)
+:return:renvoie la liste de touts les fichiers correspondants a la recherche formuler
+"""
 @route('/recherche', method=['POST'])
 def recherche():
     file_list = liste_des_fichiers()
-    search_query = request.forms.get('search_query') # recupere ce qui est taper dans le formulaire
-    if not search_query: # si il n'y a pas de recherche ou que le fichier rechercher n'existe pas
-        # ca sort tout les trucs qu'il y a
+    search_query = request.forms.get('search_query') 
+    if not search_query:
         return template("home.html", liste_des_fichiers = file_list, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
     else:
-        fich_trouv=[] # sinon ca cree une liste
-        for f in file_list:# boucle d'explo
-            if search_query.lower() in f[0].lower():# si la recherche en minuscule est dans le fichier ca l'apprend a la 
-                # liste et a la fin ca sort juste la liste
+        fich_trouv=[]
+        for f in file_list:
+            if search_query.lower() in f[0].lower():
                 fich_trouv.append(f)
         if fich_trouv == []:
             fich_trouv = file_list
         return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
 
-@route('/model_loader_iframe/<type>/<path:path>/<filename>') # Permet d'afficher le viewer 3D pour visualiser les assets visuels
+"""
+route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
+:return:sort soit le model soit la texture demander
+"""
+@route('/model_loader_iframe/<type>/<path:path>/<filename>') 
 def model_loader_iframe(type, path, filename):
     path = unquote(path)
     filename = unquote(filename)
@@ -100,7 +124,12 @@ def model_loader_iframe(type, path, filename):
     typef = type
     return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
 
-@route('/settings', method=["GET", "POST"]) # Permet de configurer le logiciel
+
+"""
+route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
+:return: renvoie la page avec les parametres voulu selectionner
+"""
+@route('/settings', method=["GET", "POST"]) 
 def settings():
     hdrs = []
     environmentos = lire_config().get("os", None)
@@ -163,7 +192,11 @@ def settings():
     
     return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, owpol = owpol)
 
-@route('/texturesfiles/<path:path>/<filename>') # Permet de renvoyer l'image originale demandée ou l'image convertie
+""""
+route qui permet de renvoyer l'image originale demandée ou l'image convertie
+:return: renvoi l'image original ou convertie pqr le programme
+"""
+@route('/texturesfiles/<path:path>/<filename>') 
 def textures_files(path, filename):
     print(filename, path)
     path = os.sep.join([*unquote(path).split("/")])
@@ -212,15 +245,20 @@ def textures_files(path, filename):
             return "Erreur {e}", 500
     return static_file(filename, root=os.path.dirname(file_path))
 
-# Route vers les dossiers contenus dans static
-
-@route('/static/<path:path>/<filename>') # Permet d'obtenir un fichier grâce a son lien
+"""
+route qui permet d'obtenir un fichier grâce a son lien
+:return: renvoie un fichier contenu dans le dossier static du programme
+""""
+@route('/static/<path:path>/<filename>') 
 def server_static(path, filename):
     return static_file(filename, root=os.path.join(static_dir, path))
 
-# Route pour les previews des textures sur la page web
-
-@route('/texturespreview/<path:path>/<filename>') # Permet d'obtenir une image a prévisualiser, si le format est inconnu le fichier est converti avec une taille de 128px par 128px
+"""
+Route pour les previews des textures sur la page web
+Permet d'obtenir une image a prévisualiser, si le format est inconnu le fichier est converti avec une taille de 128px par 128px
+:return: renvoie soit une image convertie soit l'original en 128px*128px
+"""
+@route('/texturespreview/<path:path>/<filename>') 
 def textures_preview(path, filename):
     file_path = os.path.join(path, filename).replace("\\", "/")
 
@@ -268,8 +306,12 @@ def textures_preview(path, filename):
             return "Erreur {e}", 500
 
     return static_file(filename, root=path)
-
-@route('/openfileonsystem/<path:path>/<filename>') # Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si possible)
+ 
+"""
+Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si possible)
+:return: nous ouvre l'explorer avec le fichier présélectionner si  disponible
+"""
+@route('/openfileonsystem/<path:path>/<filename>') 
 def openfileonsystem(path, filename):
     if system == "Windows":
         file_path = unquote(os.path.join(path, filename).replace("/", "\\"))
@@ -308,5 +350,5 @@ def openfileonsystem(path, filename):
     </body>
     </html>
     '''
-# Lancement du serveur Bottle
+# Execution du serveur Bottle
 run(host="localhost", port="8080", debug=True, reloader=True)

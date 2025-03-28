@@ -1,6 +1,10 @@
 from constants import *
 import json, os
-def verif_fichier_config(): # Cette fonction vérifie si les dossiers du logiciel existent, elle vérifie aussi si le fichier de configuration existe et est a jour, elle le met a jour si il manque des données. 
+def verif_fichier_config(): 
+    """
+    Cette fonction vérifie si les dossiers du logiciel existent, 
+    elle vérifie aussi si le fichier de configuration existe et est a jour, elle le met a jour si il manque des données. 
+    """    
     os.makedirs(dossier_config, exist_ok=True)
     os.makedirs(cache_folder, exist_ok=True)
     if not os.path.exists(fichier_config):
@@ -26,7 +30,6 @@ def verif_fichier_config(): # Cette fonction vérifie si les dossiers du logicie
 def lire_config(): 
     """
     Cette fonction permet de lire le fichier de configuration
-
     :return: Renvoie le contenu du fichier de configuration, None si non trouvé
     """
     if os.path.exists(fichier_config):
@@ -40,7 +43,10 @@ def lire_config():
     else:
         return None
     
-def modifier_config(cle, valeur): # Cette fonction permet de modifier le fichier de configuration
+def modifier_config(cle, valeur): 
+    """
+    Cette fonction permet de modifier le fichier de configuration
+    """
     config = lire_config()
     if config is None:
         config = {}

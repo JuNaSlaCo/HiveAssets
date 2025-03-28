@@ -200,14 +200,10 @@ route qui permet de renvoyer l'image originale demandée ou l'image convertie
 """
 @route('/texturesfiles/<path:path>/<filename>') 
 def textures_files(path, filename):
-    print(filename, path)
     path = os.sep.join([*unquote(path).split("/")])
     filename = unquote(filename)
-    print(filename, path)
     file_path = os.path.join("\\", path, filename)
-    print(file_path)
     if not os.path.exists(file_path):
-        print("404")
         raise HTTPResponse("non trouvé", status=404)
     for l in lire_cachefile().get("preview_cache", list()):
         if file_path in l:

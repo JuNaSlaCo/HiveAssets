@@ -11,9 +11,7 @@ fichier_scan = os.path.join(dossier_config, "scan.json")
 fichier_cache = os.path.join(dossier_config, "cache.json")
 cache_folder = os.path.join(dossier_config, "cache")
 curdir = os.path.dirname(__file__)
-datadir = os.path.join(curdir, "..", "data")
-static_dir = os.path.join(curdir, "..", "data", "static")
-basedir = os.path.join(curdir, "..")
+static_dir = os.path.join(curdir, "static")
 hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
 # Ici est défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 

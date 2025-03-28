@@ -12,15 +12,10 @@ from urllib.parse import unquote, quote
 from constants import *
 from config import *
 
-# Définition des fonctions
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
 
-def server_port():
-    global serverport
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("127.0.0.1", 0))
-    _, serverport = sock.getsockname()
-    sock.close()
-    print(serverport)
+# Définition des fonctions
 
 # Cette fonction crée le fichier de scan si il n'existe pas
 def creer_scanfile(): 
@@ -69,7 +64,6 @@ def liste_des_fichiers():
 
 # Autre code
 
-server_port()
 verif_fichier_config()
 if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:

@@ -1,5 +1,7 @@
 import os, platform
-# Définition des variables
+"""
+Définition de toutes les variables
+"""
 system = platform.system()
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
@@ -11,7 +13,8 @@ datadir = os.path.join(curdir, "..", "data")
 static_dir = os.path.join(curdir, "..", "data", "static")
 basedir = os.path.join(curdir, "..")
 hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
-TYPES_DE_FICHIERS = { # Ici est défini tout les fichiers qui sont pris en charge par le logiciel
+# Ici est défini tout les fichiers qui sont pris en charge par le logiciel
+TYPES_DE_FICHIERS = { 
     "jpg": "Texture",
     "jpeg": "Texture",
     "png": "Texture",
@@ -30,7 +33,8 @@ TYPES_DE_FICHIERS = { # Ici est défini tout les fichiers qui sont pris en charg
     "glb": "Mesh",
     "dae": "Mesh",
 }
-DEFAULT_CONFIG = { # Ici est défini la configuration par défaut du logiciel
+ # Ici est défini la configuration par défaut du logiciel
+DEFAULT_CONFIG = {
         "os": system,
         "scan_directory": [],
         "3Dviewerhdrname": "BaseHDR.hdr",
@@ -38,13 +42,17 @@ DEFAULT_CONFIG = { # Ici est défini la configuration par défaut du logiciel
         "openwebpageonload": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"]
 }
-DONNEES_SCAN = { # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
+# Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
+DONNEES_SCAN = { 
     "Textures" : [],
     "Mesh" : [],
     "Unknown" : []
 }
-ASSETS_TYPES = ["Textures", "Models"] # Ici est défini le type d'assets qui peut s'afficher dqns les filtres, n'est pas utile pour le moment
-DONNEES_CACHE = { # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement.
+# Ici est défini le type d'assets qui peut s'afficher dqns les filtres, n'est pas utile pour le moment
+ASSETS_TYPES = ["Textures", "Models"]
+ # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles
+ # avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement. 
+DONNEES_CACHE = {
     "cache" : [],
     "preview_cache": []
 }

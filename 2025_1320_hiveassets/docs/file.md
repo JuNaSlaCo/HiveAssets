@@ -72,6 +72,4 @@ Le projet est structuré de manière modulaire :
 - **`constants.py`** : Définition des constantes.
 - **`config.py`** : Configuration du projet.
 
-En suivant cette documentation, il est possible de **reprendre et modifier facilement le projet** pour l’adapter à de nouveaux besoins.
-
 ---

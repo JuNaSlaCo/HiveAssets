@@ -5,7 +5,7 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, random, string, socket
+import os, json, random, string
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from urllib.parse import unquote, quote
@@ -124,13 +124,13 @@ def model_loader_iframe(type, path, filename):
     typef = type
     return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
 
-
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
 :return: renvoie la page avec les parametres voulu selectionner
 """
 @route('/settings', method=["GET", "POST"]) 
 def settings():
+    iframereload = False
     hdrs = []
     environmentos = lire_config().get("os", None)
     try:
@@ -148,10 +148,8 @@ def settings():
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
     ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
-    openwebpageonload = lire_config().get("openwebpageonload", True)
     dirconfig = list(lire_config().get("scan_directory", []))
     iuf = "checked"
-    owpol = "checked"
 
     action = request.forms.get("action")
 
@@ -176,21 +174,17 @@ def settings():
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)
         modifier_config("ignoreunknownfiles", bool(returnignoreunknownfiles == 'True'))
         ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
-        returnopenwebpageonload = request.forms.get("openwebpageonload", False)
-        modifier_config("openwebpageonload", bool(returnopenwebpageonload == 'True'))
-        openwebpageonload = lire_config().get("openwebpageonload", True)
 
         hdrselect = request.forms.get("select_hdr")
         if hdrselect and hdrselect in hdrs:
             modifier_config("3Dviewerhdrname", hdrselect)
             hdr = lire_config().get("3Dviewerhdrname", None)
+            iframereload = True
 
     if ignoreunknownfiles == False:
         iuf = ""
-    if openwebpageonload == False:
-        owpol = ""
-    
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, owpol = owpol)
+
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload)
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie
@@ -346,5 +340,10 @@ def openfileonsystem(path, filename):
     </body>
     </html>
     '''
+
+@route("/ping")
+def ping():
+    return "pong"
+
 # Execution du serveur Bottle
 run(host="localhost", port=5069)

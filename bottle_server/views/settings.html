@@ -10,6 +10,9 @@
             color: white;
         }
     </style>
+    <script>
+        window.parent.document.getElementById("viewer").src = window.parent.document.getElementById("viewer").src;
+    </script>
 </head>
 <body>
     <form action="/settings" method="post">
@@ -57,11 +60,6 @@
                 <input type="hidden" name="ignoreunknownfiles" value="False">
                 <input type="checkbox" name="ignoreunknownfiles" value="True" {{iuf}}>
                 <label>Ignorer les fichiers inconnus (ignore les fichiers de types inconnus lors du scan des fichiers)</label>
-            </li>
-            <li>
-                <input type="hidden" name="openwebpageonload" value="False">
-                <input type="checkbox" name="openwebpageonload" value="True" {{owpol}}>
-                <label>Ouvrir la page web au lancement du serveur</label>
             </li>
         </ul>
         <button type="submit" name="action" value="save_options">Sauvegarder</button>

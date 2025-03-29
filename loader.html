@@ -8,26 +8,114 @@
         body{
             background-color: rgb(36, 36, 36);
             overflow: hidden;
+            font-family: 'Poppins', sans-serif;
         }
-        div{
+        .text{
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            overflow: hidden;
+            color: white;
+            transform: translate(-50%, -15%);
+            animation: 2.5s text;
+            text-align: center;
+        }
+        h1{
+            animation: 1s h1;
+        }
+        h3{
+            opacity: 0%;
+            animation: 0.5s ease-in 2.5s h3;
+            animation-fill-mode: forwards;
+        }
+        h3::after{
+            content: "";
+            animation: 2s ease 2.5s dots infinite;
+        }
+        @keyframes dots {
+            0% { content: ""; }
+            25% { content: "."; }
+            50% { content: ".."; }
+            75% { content: "..."; }
+            100% { content: ""; }
+        }
+        @keyframes h3 {
+            from { opacity: 0%;}
+            to   { opacity: 100%;}
+        }
+        @keyframes h1 {
+            from { opacity: 0%; }
+            to   { opacity: 100%; }
+        }
+        @keyframes text {
+            from { opacity: 0%; transform: translate(-50%, 165%);}
+            to   { opacity: 100%; transform: translate(-50%, -15%);}
+        }
+        .logo{
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            animation: 3s slidein;
+            animation: 2.5s logo;
             overflow: hidden;
         }
         img{
             overflow: hidden;
         }
-        @keyframes slidein {
+        @keyframes logo {
             from { transform: translate(-50%, 100%); }
             to   { transform: translate(-50%, -50%); }
         }
+
+        @keyframes ltext {
+            from { opacity: 100%; transform: translate(-50%, -15%);}
+            to   { opacity: 0%; transform: translate(-50%, -1000%);}
+        }
+        @keyframes llogo {
+            from { opacity: 100%; transform: translate(-50%, -50%); }
+            to   { opacity: 0%; transform: translate(-50%, -250%); }
+        }
+        @keyframes lh3 {
+            from { opacity: 100%;}
+            to   { opacity: 0%;}
+        }
+        .lh3{
+            animation: lh3 0.25s;
+            animation-fill-mode: forwards;
+        }
+        .lh1{
+            animation: lh1 2s;
+            animation-fill-mode: forwards;
+        }
+        .llogo{
+            animation: llogo 3s;
+            animation-fill-mode: forwards;
+        }
+        .ltext{
+            animation: ltext 3s;
+            animation-fill-mode: forwards;
+        }
     </style>
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on("pret", () => {
+            const h3 = document.getElementById("h3");
+            const textdiv = document.getElementById("textdiv");
+            const logo = document.getElementById("logo");
+            
+            h3.classList.add("lh3");
+            textdiv.classList.add("ltext");
+            logo.classList.add("llogo");
+        });
+    </script>
 </head>
 <body>
-    <div>
+    <div id="textdiv" class="text">
+        <h1 id="h1">Bienvenue sur HiveAssets</h1>
+        <h3 id="h3">Chargement</h3>
+    </div>
+    <div id="logo" class="logo">
         <img src="bottle_server/static/icons/HiveAssets.png">
     </div>
 </body>

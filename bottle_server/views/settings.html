@@ -10,9 +10,11 @@
             color: white;
         }
     </style>
+    % if iframereload == True:
     <script>
         window.parent.document.getElementById("viewer").src = window.parent.document.getElementById("viewer").src;
     </script>
+    % end
 </head>
 <body>
     <form action="/settings" method="post">

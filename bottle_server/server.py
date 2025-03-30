@@ -169,6 +169,7 @@ def settings():
     elif action == "remove_hdr":
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
+        iframereload = True
 
     elif action == "save_options":
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)

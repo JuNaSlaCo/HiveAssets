@@ -5,6 +5,7 @@ import os, platform
 Définition de toutes les variables
 """
 system = platform.system()
+serverport = 0
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")
@@ -39,7 +40,6 @@ DEFAULT_CONFIG = {
         "scan_directory": [],
         "3Dviewerhdrname": "BaseHDR.hdr",
         "ignoreunknownfiles": True,
-        "openwebpageonload": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"]
 }
 # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment

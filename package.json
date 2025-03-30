@@ -4,12 +4,52 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "JuNaSlaCo",
   "license": "ISC",
+  "description": "HiveAssets",
   "devDependencies": {
-    "electron": "^35.1.2"
+    "electron": "^35.1.2",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.junaslaco.hiveassets",
+    "productName": "HiveAssets",
+    "copyright": "© 2025 JuNaSlaCo",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/*/{test,docs,example}",
+      "!dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "bottle_server/dist/server.exe",
+        "to": "bottle_server/server.exe"
+      }
+    ],
+    "win": {
+      "icon": "build_data/icon.ico",
+      "target": "nsis"
+    },
+    "mac": {
+      "icon": "build_data/icon.icns",
+      "target": "dmg"
+    },
+    "linux": {
+      "icon": "build_data/icon.png",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.2"
   }
 }

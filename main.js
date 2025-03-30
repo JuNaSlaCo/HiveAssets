@@ -1,9 +1,13 @@
-const { app, BrowserWindow, ipcMain } = require('electron/main');
-const { execSync, spawn } = require('child_process');
+const { app, BrowserWindow } = require('electron/main');
+const { spawn } = require('child_process');
 const path = require('node:path');
 const http = require('http');
+const kill = require('tree-kill');
+const enDev = !app.isPackaged;
 
-const serverPath = path.join(__dirname, "bottle_server");
+const serverPath = enDev
+    ? path.join(__dirname, 'bottle_server', 'server.exe')
+    : path.join(process.resourcesPath, 'bottle_server', 'server.exe');
 
 let server;
 let win;
@@ -17,7 +21,6 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false
     },
-    icon: path.join(__dirname, 'bottle_server/static/icons/HiveAssets.png'),
     autoHideMenuBar: true
   });
 
@@ -34,21 +37,32 @@ function createWindow() {
 }
 
 function startServer() {
-  server = spawn("python", ["server.py"], { cwd: serverPath, detached: true, stdio: "ignore" });
-  server.unref();
+  server = spawn(serverPath, {
+      stdio: 'ignore'
+  });
+
+  server.on('exit', (code) => {
+    console.log(`Server exited with code: ${code}`);
+  });
+
+  server.on('error', (err) => {
+    console.error(`Error starting server: ${err.message}`);
+  });
 }
 
 function stopServer() {
   if (server) {
-    try {
-      if (process.platform === "win32") {
-        execSync(`taskkill /PID ${server.pid} /T /F`);
+    console.log("Arrêt du serveur");
+    kill(server.pid, 'SIGTERM', (err) => {
+      if (err) {
+        console.error("Erreur de l'arrêt du serveur :", err);
       } else {
-        process.kill(-server.pid, "SIGTERM");
+        console.log("Serveur arrêté.");
       }
-    } catch (error) {
-      console.error("Erreur lors de la fermeture du serveur:", error);
-    }
+      server = null;
+    });
+  } else {
+    console.log("Le serveur n'est pas démarrer.");
   }
 }
 
@@ -84,8 +98,8 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  stopServer();
   if (process.platform !== "darwin") {
-    stopServer();
     app.quit();
   }
 });

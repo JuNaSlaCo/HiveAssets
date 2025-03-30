@@ -10,20 +10,32 @@
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
         }
+        .loader{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
         .text{
             position: absolute;
-            top: 10%;
+            top: 20vh;
             left: 50%;
-            overflow: hidden;
+            margin-bottom: 5vh;
             color: white;
-            transform: translate(-50%, -15%);
-            animation: 2.5s text;
+            transform: translate(-50%, 0vh);
             text-align: center;
+            animation: 2.5s text;
+            width: 90vw;
         }
         h1{
-            animation: 1s h1;
+            font-size: 3vw;
+            /*animation: 1s h1;*/
+            margin: 0;
         }
         h3{
+            font-size: 1.25vw;
             opacity: 0%;
             animation: 0.5s ease-in 2.5s h3;
             animation-fill-mode: forwards;
@@ -41,42 +53,47 @@
         }
         @keyframes h3 {
             from { opacity: 0%;}
-            to   { opacity: 100%;}
+            to   { opacity: 75%;}
         }
         @keyframes h1 {
             from { opacity: 0%; }
             to   { opacity: 100%; }
         }
         @keyframes text {
-            from { opacity: 0%; transform: translate(-50%, 165%);}
-            to   { opacity: 100%; transform: translate(-50%, -15%);}
+            from { opacity: 0%; transform: translate(-50%, 25vh);}
+            to   { opacity: 100%; transform: translate(-50%, 0vh);}
         }
         .logo{
             position: absolute;
-            top: 50%;
+            top: 45vh;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, 0vh);
+            width: 40vh;
             animation: 2.5s logo;
             overflow: hidden;
         }
         img{
+            width: 100%;
+            height: auto;
             overflow: hidden;
         }
         @keyframes logo {
-            from { transform: translate(-50%, 100%); }
-            to   { transform: translate(-50%, -50%); }
+            from { opacity: 0%; transform: translate(-50%, 25vh); }
+            to   { opacity: 100%; transform: translate(-50%, 0vh); }
         }
 
         @keyframes ltext {
-            from { opacity: 100%; transform: translate(-50%, -15%);}
-            to   { opacity: 0%; transform: translate(-50%, -1000%);}
+            0% { opacity: 100%; transform: translate(-50%, 0vh);}
+            50% { opacity: 0%; }
+            100% { opacity: 0%; transform: translate(-50%, -25vh);}
         }
         @keyframes llogo {
-            from { opacity: 100%; transform: translate(-50%, -50%); }
-            to   { opacity: 0%; transform: translate(-50%, -250%); }
+            0% { opacity: 100%; transform: translate(-50%, 0vh); }
+            50% { opacity: 0%; }
+            100% { opacity: 0%; transform: translate(-50%, -25vh); }
         }
         @keyframes lh3 {
-            from { opacity: 100%;}
+            from { opacity: 75%;}
             to   { opacity: 0%;}
         }
         .lh3{
@@ -111,12 +128,14 @@
     </script>
 </head>
 <body>
-    <div id="textdiv" class="text">
-        <h1 id="h1">Bienvenue sur HiveAssets</h1>
-        <h3 id="h3">Chargement</h3>
-    </div>
-    <div id="logo" class="logo">
-        <img src="bottle_server/static/icons/HiveAssets.png">
+    <div class="loader">
+        <div id="textdiv" class="text">
+            <h1 id="h1">Bienvenue sur HiveAssets</h1>
+            <h3 id="h3">Chargement</h3>
+        </div>
+        <div id="logo" class="logo">
+            <img src="bottle_server/static/icons/HiveAssets.png">
+        </div>
     </div>
 </body>
 </html>

@@ -1,19 +1,10 @@
-const { app, BrowserWindow, autoUpdater } = require('electron/main');
+const { app, BrowserWindow } = require('electron/main');
 const { spawn } = require('child_process');
+const { autoUpdater } = requier('electron-updater');
 const path = require('node:path');
 const http = require('http');
 const kill = require('tree-kill');
-const log = require("electron-log");
 const enDev = !app.isPackaged;
-
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = "info";
-
-const updateserver = "https://update.electronjs.org";
-const repo = "JuNaSlaCo/HiveAssets";
-const feedURL = `${updateserver}/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`;
-
-autoUpdater.setFeedURL({ url: feedURL });
 
 const serverPath = enDev
     ? path.join(__dirname, 'bottle_server', 'dist', 'server.exe')
@@ -95,7 +86,7 @@ function checkServerReady() {
 }
 
 app.whenReady().then(() => {
-  autoUpdater.checkForUpdates
+  autoUpdater.checkForUpdatesAndNotify();
   startServer();
   createWindow();
 
@@ -108,25 +99,20 @@ app.whenReady().then(() => {
 });
 
 autoUpdater.on("update-available", () => {
-  dialog.showMessageBox({
-    type: "info",
-    title: "Mise à jour disponible !",
-    message: "Une nouvelle version est disponible ! Téléchargement en cours...",
-  });
-});
+  console.log("Update available !");
+})
 
-autoUpdater.on("update-downloaded", () => {
-  dialog.showMessageBox({
-    type: "info",
-    title: "Mise à jour prête",
-    message: "Redémarrer l'application pour installer la mise a jour.",
-    buttons: ["Oui", "Plus tard"],
-  }).then((result) => {
-    if (result.response === 0) {
-      autoUpdater.quitAndInstall();
-    }
-  });
-});
+autoUpdater.on("checking-for-update", () => {
+  console.log("checking for update");
+})
+
+autoUpdater.on("download-progress", (progressTrack) => {
+  console.log(progressTrack);
+})
+
+autoUpdater.on("error", (err) => {
+  console.log("Erreur de l'auto-updater : ", err);
+})
 
 app.on("window-all-closed", () => {
   stopServer();

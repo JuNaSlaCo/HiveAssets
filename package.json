@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "publish": "electron-builder --publish always"
+    "publish": "electron-builder --p always"
   },
   "keywords": [],
   "author": "JuNaSlaCo",
@@ -13,7 +13,8 @@
   "description": "HiveAssets",
   "devDependencies": {
     "electron": "^35.1.2",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "electron-updater": "^6.6.2"
   },
   "build": {
     "appId": "com.junaslaco.hiveassets",
@@ -33,6 +34,13 @@
         "to": "bottle_server/server.exe"
       }
     ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "JuNaSlaCo",
+        "repo": "HiveAssets"
+      }
+    ],
     "win": {
       "icon": "build_data/icon.ico",
       "target": "nsis"
@@ -43,7 +51,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "include": "build_data/installer.nsh"
+      "include": "build_data/installer.nsh",
     },
     "mac": {
       "icon": "build_data/icon.icns",
@@ -56,14 +64,5 @@
         "deb"
       ]
     }
-  },
-  "dependencies": {
-    "electron-updater": "^6.6.2",
-    "tree-kill": "^1.2.2"
-  },
-  "publish": {
-    "provider": "github",
-    "owner": "JuNaSlaCo",
-    "repo": "HiveAssets"
   }
 }

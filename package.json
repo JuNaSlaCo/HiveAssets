@@ -58,6 +58,7 @@
     }
   },
   "dependencies": {
+    "electron-updater": "^6.6.2",
     "tree-kill": "^1.2.2"
   }
 }

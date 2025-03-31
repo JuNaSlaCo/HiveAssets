@@ -13,8 +13,7 @@
   "description": "HiveAssets",
   "devDependencies": {
     "electron": "^35.1.2",
-    "electron-builder": "^26.0.12",
-    "electron-updater": "^6.6.2"
+    "electron-builder": "^26.0.12"
   },
   "build": {
     "appId": "com.junaslaco.hiveassets",
@@ -64,5 +63,9 @@
         "deb"
       ]
     }
+  },
+  "dependencies": {
+    "tree-kill": "^1.2.2",
+    "electron-updater": "^6.6.2"
   }
 }

@@ -6,7 +6,7 @@ const kill = require('tree-kill');
 const enDev = !app.isPackaged;
 
 const serverPath = enDev
-    ? path.join(__dirname, 'bottle_server', 'server.exe')
+    ? path.join(__dirname, 'bottle_server', 'dist', 'server.exe')
     : path.join(process.resourcesPath, 'bottle_server', 'server.exe');
 
 let server;

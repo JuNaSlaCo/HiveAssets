@@ -51,7 +51,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "include": "build_data/installer.nsh",
+      "include": "build_data/installer.nsh"
     },
     "mac": {
       "icon": "build_data/icon.icns",

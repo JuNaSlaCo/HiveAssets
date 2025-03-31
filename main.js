@@ -1,6 +1,6 @@
 const { app, BrowserWindow } = require('electron/main');
 const { spawn } = require('child_process');
-const { autoUpdater } = requier('electron-updater');
+const { autoUpdater } = require('electron-updater');
 const path = require('node:path');
 const http = require('http');
 const kill = require('tree-kill');

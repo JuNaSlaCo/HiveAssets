@@ -3,7 +3,11 @@ const { spawn } = require('child_process');
 const path = require('node:path');
 const http = require('http');
 const kill = require('tree-kill');
+const log = require("electron-log");
 const enDev = !app.isPackaged;
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = "info";
 
 const updateserver = "https://update.electronjs.org";
 const repo = "JuNaSlaCo/HiveAssets";

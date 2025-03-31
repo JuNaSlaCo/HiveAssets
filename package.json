@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "publish": "electron-builder --publish always"
   },
   "keywords": [],
   "author": "JuNaSlaCo",
@@ -60,5 +60,10 @@
   "dependencies": {
     "electron-updater": "^6.6.2",
     "tree-kill": "^1.2.2"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "JuNaSlaCo",
+    "repo": "HiveAssets"
   }
 }

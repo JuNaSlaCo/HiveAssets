@@ -1,3 +1,4 @@
+% from urllib.parse import quote
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,22 +11,26 @@
             color: white;
         }
     </style>
-    % if iframereload == True:
     <script>
+        % if iframereload == True:
         window.parent.document.getElementById("viewer").src = window.parent.document.getElementById("viewer").src;
+        % end
+        const encodedirectory = () => {
+            const directory = document.getElementById("scandirectory");
+            directory.value = encodeURIComponent(directory.value);
+        }
     </script>
-    % end
 </head>
 <body>
     <form action="/settings" method="post">
         <h2>Dossiers a scanner :</h2>
-        <input name="repertoire" type="text" 
+        <input id="scandirectory" name="repertoire" type="text" 
         % if os == "Windows":
         placeholder='"C:\Users\Prod\Assets\"'>
         % else:
         placeholder='"/home/Freddy/Prod_Assets/"'>
         % end
-        <button type="submit" name="action" value="add_repertoire">Ajouter</button>
+        <button type="submit" name="action" value="add_repertoire" onclick="encodedirectory()">Ajouter</button>
         <ul>
             % for f in scan_dir:
             <li>
@@ -33,7 +38,7 @@
                 <button type="submit" name="action" value="del_repertoire">
                     Supprimer
                 </button>
-                <input type="hidden" name="dir_delete" value="{{f}}">
+                <input type="hidden" name="dir_delete" value="{{quote(f)}}">
             </li>
             % end
         </ul>

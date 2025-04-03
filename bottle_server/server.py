@@ -111,7 +111,6 @@ def model_loader_iframe(type, path, filename):
     hdr = lire_config().get("3Dviewerhdrname", "")
     if path == '"LOGO"' and filename == '"LOGO"':
         file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
-        print("Msg : ", file_path)
     if not os.path.exists(os.path.join(hdr_dir, hdr)):
         modifier_config("3Dviewerhdrname", "")
         hdr = ""
@@ -154,14 +153,14 @@ def settings():
     action = request.forms.get("action")
 
     if action == "add_repertoire":
-        repertoire = str(request.forms.get("repertoire"))
-        repertoire = repertoire.replace('"', '').replace("'", '')
+        repertoire = str(unquote(request.forms.get("repertoire")))
+        repertoire = repertoire.replace('"', '')
         if repertoire not in dirconfig and repertoire != "":
             dirconfig.append(repertoire)
             modifier_config("scan_directory", dirconfig)
     
     elif action == "del_repertoire":
-        delete = request.forms.get("dir_delete")
+        delete = unquote(request.forms.get("dir_delete"))
         if delete and delete in dirconfig:
             dirconfig.remove(delete)
             modifier_config("scan_directory", dirconfig)

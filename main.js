@@ -19,6 +19,7 @@ const serverPath = enDev
 let server;
 let win;
 let serverLoaded = false;
+let finishupdate = true;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -72,7 +73,7 @@ function stopServer() {
       server = null;
     });
   } else {
-    console.log("Le serveur n'est pas démarrer.");
+    console.log("Le serveur n'est pas démarré.");
   }
 }
 
@@ -110,6 +111,7 @@ app.whenReady().then(() => {
 
 autoUpdater.on("update-available", () => {
   console.log("Update available !");
+  finishupdate = false;
 })
 
 autoUpdater.on("checking-for-update", () => {
@@ -124,9 +126,21 @@ autoUpdater.on("error", (err) => {
   console.log("Erreur de l'auto-updater : ", err);
 })
 
+autoUpdater.on("update-downloaded", () => {
+  finishupdate = true
+})
+
 app.on("window-all-closed", () => {
   stopServer();
-  if (process.platform !== "darwin") {
-    app.quit();
+  if (finishupdate){
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
+  } else {
+    setInterval(() => {
+      if (finishupdate){
+        app.quit();
+      }
+    }, 5000);
   }
 });

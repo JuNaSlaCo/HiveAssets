@@ -13,3 +13,18 @@ function reloadiframe(url){
 function openfileonsystem(url){
     open(url)
 }
+let oldaudio = '';
+function playaudio(url){
+    const player = document.getElementById('main-audio');
+    if (oldaudio !== url) {
+        player.src = url;
+        player.play();
+        oldaudio = url;
+    } else {
+        if (player.paused) {
+            player.play();
+        } else {
+            player.pause();
+        }
+    }
+}

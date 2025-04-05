@@ -373,7 +373,8 @@ def getaudiofile(path, filename):
             old_cache = list(lire_cachefile().get("audio_cache", []))
             old_cache.append({file_path: cache_path})
 
-            ffmpeg.input(file_path).output(cache_path, audio_bitrate='192k').run(overwrite_output=True)
+            ffmpeg.input(file_path).output(cache_path, audio_bitrate='192k').run(overwrite_output=True, cmd=ffmpeg_path)
+            modifier_cachefile("audio_cache", old_cache)
             return static_file(newname, root=cache_folder)
         except ffmpeg.Error as e:
             print(f"Erreur FFmpeg : {e}")

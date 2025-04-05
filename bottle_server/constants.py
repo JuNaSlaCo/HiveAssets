@@ -13,6 +13,7 @@ cache_folder = os.path.join(dossier_config, "cache")
 curdir = os.path.dirname(__file__)
 static_dir = os.path.join(curdir, "static")
 hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
+ffmpeg_path = os.getenv("FFMPEG_PATH")
 # Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",

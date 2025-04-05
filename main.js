@@ -5,6 +5,12 @@ const path = require('node:path');
 const http = require('http');
 const kill = require('tree-kill');
 const enDev = !app.isPackaged;
+let ffmpegPath = require('ffmpeg-static');
+console.log('FFmpeg path:', ffmpegPath);
+
+if (ffmpegPath.includes('app.asar')) {
+  ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
+}
 
 const serverPath = enDev
     ? path.join(__dirname, 'bottle_server', 'dist', 'server.exe')
@@ -38,7 +44,11 @@ function createWindow() {
 
 function startServer() {
   server = spawn(serverPath, {
-      stdio: 'ignore'
+      stdio: 'ignore',
+      env: {
+        ...process.env,
+        FFMPEG_PATH: ffmpegPath
+      }
   });
 
   server.on('exit', (code) => {

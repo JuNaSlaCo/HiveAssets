@@ -5,7 +5,6 @@ import os, platform
 Définition de toutes les variables
 """
 system = platform.system()
-serverport = 0
 dossier_config = os.path.join(os.path.expanduser("~"), ".hiveasset")
 fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")
@@ -14,7 +13,8 @@ cache_folder = os.path.join(dossier_config, "cache")
 curdir = os.path.dirname(__file__)
 static_dir = os.path.join(curdir, "static")
 hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
-# Ici est défini tout les fichiers qui sont pris en charge par le logiciel
+ffmpeg_path = os.getenv("FFMPEG_PATH")
+# Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",
     "jpeg": "Texture",
@@ -33,6 +33,11 @@ TYPES_DE_FICHIERS = {
     "gltf": "Mesh",
     "glb": "Mesh",
     "dae": "Mesh",
+    "mp3": "Sound Waves",
+    "wav": "Sound Waves",
+    "ogg": "Sound Waves",
+    "flac": "Sound Waves",
+    "aac": "Sound Waves"
 }
  # Ici est défini la configuration par défaut du logiciel
 DEFAULT_CONFIG = {
@@ -49,10 +54,11 @@ DONNEES_SCAN = {
     "Unknown" : []
 }
 # Ici est défini le type d'assets qui peut s'afficher dqns les filtres, n'est pas utile pour le moment
-ASSETS_TYPES = ["Textures", "Models"]
+ASSETS_TYPES = ["Textures", "Models", "Sound Waves"]
  # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles
  # avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement. 
 DONNEES_CACHE = {
     "cache" : [],
-    "preview_cache": []
+    "preview_cache": [],
+    "audio_cache": []
 }

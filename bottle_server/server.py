@@ -5,7 +5,7 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, random, string
+import os, json, random, string, ffmpeg
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from urllib.parse import unquote, quote
@@ -213,7 +213,7 @@ def textures_files(path, filename):
                 i = i.convert("RGBA")
                 
                 newname = ""
-                cachelist = lire_cachefile().get("preview_cache")
+                cachelist = lire_cachefile().get("preview_cache", [])
 
                 while newname == "" or newname in cachelist:
                     liste = random.choices(string.ascii_lowercase, k=10)
@@ -223,7 +223,7 @@ def textures_files(path, filename):
 
                 cache_path = os.path.join(cache_folder, newname)
 
-                old_cache = list(lire_cachefile().get("preview_cache"))
+                old_cache = list(lire_cachefile().get("preview_cache", []))
                 old_cache.append({file_path: cache_path})
 
                 i.save(cache_path, format="PNG")
@@ -253,7 +253,7 @@ def textures_preview(path, filename):
     file_path = os.path.join(path, filename).replace("\\", "/")
 
     if not os.path.exists(file_path):
-        raise HTTPResponse("non trouvé", status=404)
+        raise HTTPResponse("Texture non trouvé", status=404)
     for l in lire_cachefile().get("cache", list()):
         if file_path in l:
             for k, v in l.items():
@@ -274,7 +274,7 @@ def textures_preview(path, filename):
                     i = i.resize((128, 128))
                 
                 newname = ""
-                cachelist = lire_cachefile().get("cache")
+                cachelist = lire_cachefile().get("cache", [])
 
                 while newname == "" or newname in cachelist:
                     liste = random.choices(string.ascii_lowercase, k=10)
@@ -284,7 +284,7 @@ def textures_preview(path, filename):
 
                 cache_path = os.path.join(cache_folder, newname)
 
-                old_cache = list(lire_cachefile().get("cache"))
+                old_cache = list(lire_cachefile().get("cache", []))
                 old_cache.append({file_path: cache_path})
 
                 i.save(cache_path, format="PNG")
@@ -340,6 +340,46 @@ def openfileonsystem(path, filename):
     </body>
     </html>
     '''
+
+@route('/getaudiofile/<path:path>/<filename>') 
+def getaudiofile(path, filename):
+    path = os.sep.join([*unquote(path).split("/")])
+    filename = unquote(filename)
+    file_path = os.path.join("\\", path, filename)
+    if not os.path.exists(file_path):
+        raise HTTPResponse("Sound Wave non trouvé", status=404)
+    for l in lire_cachefile().get("audio_cache", list()):
+        if file_path in l:
+            for k, v in l.items():
+                if not os.path.exists(v):
+                    break
+                else:
+                    return static_file(v, root=cache_folder)
+    extension = filename.lower().split('.')[-1]
+    types = ["wav", "ogg", "flac", "aac"]
+
+    if extension in types:
+        try:
+            newname = ""
+            cachelist = lire_cachefile().get("audio_cache", [])
+
+            while newname == "" or newname in cachelist:
+                liste = random.choices(string.ascii_lowercase, k=10)
+                for l in liste:
+                    newname += l
+            newname = (newname + ".mp3")
+
+            cache_path = os.path.join(cache_folder, newname)
+            old_cache = list(lire_cachefile().get("audio_cache", []))
+            old_cache.append({file_path: cache_path})
+
+            ffmpeg.input(file_path).output(cache_path, audio_bitrate='192k').run(overwrite_output=True, cmd=ffmpeg_path)
+            modifier_cachefile("audio_cache", old_cache)
+            return static_file(newname, root=cache_folder)
+        except ffmpeg.Error as e:
+            print(f"Erreur FFmpeg : {e}")
+            raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=404)
+    return static_file(filename, root=os.path.dirname(file_path))
 
 @route("/ping")
 def ping():

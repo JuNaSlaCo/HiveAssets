@@ -65,7 +65,11 @@
             <div class="explorer">
                 % for l in liste_des_fichiers:
                     %l[2] = l[2].replace("\\", "/")
+                    % if l[1] == "Sound Waves":
+                <button class="butimg" onclick="playaudio('/getaudiofile/{{quote(l[2])}}')" ondblclick="openfileonsystem('/openfileonsystem/{{quote(l[2])}}')">
+                    % else:
                 <button class="butimg" onclick='reloadiframe("/model_loader_iframe/{{quote(l[1])}}/{{quote(l[2])}}")' ondblclick="openfileonsystem('/openfileonsystem/{{quote(l[2])}}')">
+                    % end
                     <div class="filecontent">
                         % if l[1] == "Texture":
                             <img class="imgexplorer" src="/texturespreview/{{l[2]}}" loading="lazy">
@@ -86,5 +90,6 @@
         
     </div>
     <img src="/static/icons/HiveAssets.png" alt="logo" id="logo">
+    <audio id="main-audio"></audio>
 </body>
 </html>

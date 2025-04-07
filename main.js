@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeImage } = require('electron/main');
+const { app, BrowserWindow, ipcMain, nativeImage, dialog } = require('electron/main');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 const path = require('node:path');
@@ -140,6 +140,19 @@ app.whenReady().then(() => {
       icon: icon
     })
   })
+
+  ipcMain.handle('openfolder', async (event) => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory']
+    });
+  
+    if (!result.canceled && result.filePaths.length > 0) {
+      event.sender.send('selectfolder', result.filePaths[0]);
+      console.info(result)
+    } else {
+      event.sender.send('selectfolder', null);
+    }
+  });    
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

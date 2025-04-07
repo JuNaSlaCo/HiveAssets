@@ -16,22 +16,36 @@
         % if iframereload == True:
         window.parent.document.getElementById("viewer").src = window.parent.document.getElementById("viewer").src;
         % end
+        % if reloadexplorer == True:
+        window.parent.location.reload();
+        % end
         const encodedirectory = () => {
-            const directory = document.getElementById("scandirectory");
+            const directory = document.getElementById("repertoirepath");
             directory.value = encodeURIComponent(directory.value);
         }
+        window.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById('scandirectory');
+            button.addEventListener('click', () => {
+            window.parent.postMessage({ action: 'open-folder-dialog' }, '*');
+            });
+        });
+        window.addEventListener('message', (event) => {
+            console.info(event)
+            if (event.data.action === 'folder-selected') {
+                document.getElementById('repertoirepath').value = event.data.path;
+                const but = document.getElementById('adddirectorytoconfig')
+                but.click()
+            }
+        });
     </script>
 </head>
 <body>
     <form action="/settings" method="post">
         <h2>Dossiers a scanner :</h2>
-        <input id="scandirectory" name="repertoire" type="text" 
-        % if os == "Windows":
-        placeholder='"C:\Users\Prod\Assets\"'>
-        % else:
-        placeholder='"/home/Freddy/Prod_Assets/"'>
-        % end
-        <button type="submit" name="action" value="add_repertoire" onclick="encodedirectory()">Ajouter</button>
+        <input id="scandirectory" name="repertoire" type="button" value="Ajouter un dossier" />
+        <input id="repertoirepath" name="repertoirepath" type="text" readonly hidden/>
+
+        <button type="submit" name="action" value="add_repertoire" onclick="encodedirectory()" id="adddirectorytoconfig" hidden></button>
         <ul>
             % for f in scan_dir:
             <li>

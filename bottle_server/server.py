@@ -130,6 +130,7 @@ route qui permet d'afficher les parametres et de configurer les preferences de l
 @route('/settings', method=["GET", "POST"]) 
 def settings():
     iframereload = False
+    reloadexplorer = False
     hdrs = []
     environmentos = lire_config().get("os", None)
     try:
@@ -153,17 +154,19 @@ def settings():
     action = request.forms.get("action")
 
     if action == "add_repertoire":
-        repertoire = str(unquote(request.forms.get("repertoire")))
+        repertoire = str(unquote(request.forms.get("repertoirepath")))
         repertoire = repertoire.replace('"', '')
         if repertoire not in dirconfig and repertoire != "":
             dirconfig.append(repertoire)
             modifier_config("scan_directory", dirconfig)
+            reloadexplorer = True
     
     elif action == "del_repertoire":
         delete = unquote(request.forms.get("dir_delete"))
         if delete and delete in dirconfig:
             dirconfig.remove(delete)
             modifier_config("scan_directory", dirconfig)
+            reloadexplorer = True
 
     elif action == "remove_hdr":
         modifier_config("3Dviewerhdrname", "")
@@ -184,7 +187,7 @@ def settings():
     if ignoreunknownfiles == False:
         iuf = ""
 
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload)
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer)
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie

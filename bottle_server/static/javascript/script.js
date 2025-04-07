@@ -35,3 +35,16 @@ function dragFile(file) {
         console.warn("electronAPI.startFileDrag non trouvé")
     }
 }
+window.addEventListener('message', (event) => {
+    if (event.data.action === 'open-folder-dialog') {
+        window.electronAPI.openFolderDialog();
+    }
+  });
+
+window.electronAPI.onFolderSelected((repPath) => {
+    console.info(repPath)
+    const iframe = document.getElementById('settings-page');
+    if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ action: 'folder-selected', path: repPath }, '*');
+    }
+});

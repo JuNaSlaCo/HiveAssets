@@ -1,6 +1,6 @@
 # HiveAssets
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 HiveAssets est un gestionnaire d'assets (textures, modèles, etc.) permettant d'organiser et de centraliser divers fichiers multimédias.
@@ -98,6 +98,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Cocoagneau"><img src="https://avatars.githubusercontent.com/u/201631272?v=4?s=100" width="100px;" alt="Cocoagneau"/><br /><sub><b>Cocoagneau</b></sub></a><br /><a href="#ideas-Cocoagneau" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Slayjojo"><img src="https://avatars.githubusercontent.com/u/201461005?v=4?s=100" width="100px;" alt="Slayjojo"/><br /><sub><b>Slayjojo</b></sub></a><br /><a href="#ideas-Slayjojo" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ju78"><img src="https://avatars.githubusercontent.com/u/1052340?v=4?s=100" width="100px;" alt="Jan Uebernickel"/><br /><sub><b>Jan Uebernickel</b></sub></a><br /><a href="#ideas-ju78" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ju-78"><img src="https://avatars.githubusercontent.com/u/201461159?v=4?s=100" width="100px;" alt="Ju-78"/><br /><sub><b>Ju-78</b></sub></a><br /><a href="#ideas-Ju-78" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
   <tfoot>

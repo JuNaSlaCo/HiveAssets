@@ -12,7 +12,6 @@
   "license": "ISC",
   "description": "HiveAssets",
   "devDependencies": {
-    "all-contributors-cli": "^6.26.1",
     "electron": "^35.1.2",
     "electron-builder": "^26.0.12"
   },

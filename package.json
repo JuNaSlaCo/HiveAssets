@@ -1,6 +1,6 @@
 {
   "name": "electron",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -32,6 +32,10 @@
       {
         "from": "bottle_server/dist/server.exe",
         "to": "bottle_server/server.exe"
+      }, 
+      {
+        "from": "build_assets/icon.png",
+        "to": "icon.png"
       }
     ],
     "publish": [
@@ -42,7 +46,7 @@
       }
     ],
     "win": {
-      "icon": "build_data/icon.ico",
+      "icon": "build_assets/icon.ico",
       "target": "nsis"
     },
     "nsis": {
@@ -51,14 +55,14 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "include": "build_data/installer.nsh"
+      "include": "build_assets/installer.nsh"
     },
     "mac": {
-      "icon": "build_data/icon.icns",
+      "icon": "build_assets/icon.icns",
       "target": "dmg"
     },
     "linux": {
-      "icon": "build_data/icon.png",
+      "icon": "build_assets/icon.png",
       "target": [
         "AppImage",
         "deb"

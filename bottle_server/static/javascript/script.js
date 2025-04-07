@@ -28,3 +28,10 @@ function playaudio(url){
         }
     }
 }
+function dragFile(file) {
+    if (window.electronAPI && window.electronAPI.startFileDrag) {
+        window.electronAPI.startFileDrag(file)
+    } else {
+        console.warn("electronAPI.startFileDrag non trouvé")
+    }
+}

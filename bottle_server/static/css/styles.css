@@ -135,6 +135,10 @@ h4{
     height: 110px;
     object-fit: cover;
     border-radius: 5px;
+    cursor: grab;
+}
+.imgexplorer:active{
+    cursor: grabbing;
 }
 .butimg{
     width: 155px;

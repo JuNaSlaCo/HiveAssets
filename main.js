@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron/main');
+const { app, BrowserWindow, ipcMain, nativeImage } = require('electron/main');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 const path = require('node:path');
@@ -16,6 +16,10 @@ const serverPath = enDev
     ? path.join(__dirname, 'bottle_server', 'dist', 'server.exe')
     : path.join(process.resourcesPath, 'bottle_server', 'server.exe');
 
+const defaulticon = enDev
+    ? path.join(__dirname, 'build_assets', 'icon.png')
+    : path.join(process.resourcesPath, 'icon.png');
+
 let server;
 let win;
 let serverLoaded = false;
@@ -26,8 +30,9 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     autoHideMenuBar: true
   });
@@ -42,6 +47,15 @@ function createWindow() {
     }
   }, 3000);
 }
+
+const unquotePath = (quotePath) => {
+  try {
+    return decodeURIComponent(quotePath);
+  } catch (e) {
+    console.warn("Erreur de décodage du repertoire :", quotePath);
+    return quotePath;
+  }
+};
 
 function startServer() {
   server = spawn(serverPath, {
@@ -100,6 +114,32 @@ app.whenReady().then(() => {
   autoUpdater.checkForUpdatesAndNotify();
   startServer();
   createWindow();
+
+  ipcMain.on('drag-file', (event, { file }) => {
+    const win = BrowserWindow.getFocusedWindow()
+    if (!win) return
+
+    const decodePath = unquotePath(file);
+    const ext = path.extname(decodePath);
+    let icon;
+
+    if (ext === ".png") {
+      icon = nativeImage.createFromPath(decodePath).resize({
+        width: 64,
+        height: 64
+      });
+    } else {
+      icon = nativeImage.createFromPath(defaulticon).resize({
+        width: 64,
+        height: 64
+      });
+    }
+
+    win.webContents.startDrag({
+      file: decodePath,
+      icon: icon
+    })
+  })
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

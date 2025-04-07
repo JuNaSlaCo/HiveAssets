@@ -114,9 +114,7 @@
         }
     </style>
     <script>
-        const { ipcRenderer } = require('electron');
-
-        ipcRenderer.on("pret", () => {
+        window.electronAPI.onServerReady(() => {
             const h3 = document.getElementById("h3");
             const textdiv = document.getElementById("textdiv");
             const logo = document.getElementById("logo");

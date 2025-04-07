@@ -17,7 +17,12 @@
       "profile": "https://github.com/NaweDev",
       "contributions": [
         "code",
-        "doc"
+        "ideas",
+        "design",
+        "review",
+        "infra",
+        "maintenance",
+        "projectManagement"
       ]
     },
     {
@@ -26,7 +31,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/201631272?v=4",
       "profile": "https://github.com/Cocoagneau",
       "contributions": [
-        "ideas"
+        "ideas",
+        "design"
       ]
     },
     {
@@ -35,7 +41,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/201461005?v=4",
       "profile": "https://github.com/Slayjojo",
       "contributions": [
-        "ideas"
+        "doc",
+        "example",
+        "content"
       ]
     },
     {
@@ -44,7 +52,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/201461159?v=4",
       "profile": "https://github.com/Ju-78",
       "contributions": [
-        "ideas"
+        "design",
+        "content"
       ]
     }
   ],

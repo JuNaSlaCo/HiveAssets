@@ -94,10 +94,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/NaweDev"><img src="https://avatars.githubusercontent.com/u/96984101?v=4?s=100" width="100px;" alt="Nawe_Dev"/><br /><sub><b>Nawe_Dev</b></sub></a><br /><a href="https://github.com/JuNaSlaCo/HiveAssets/commits?author=NaweDev" title="Code">💻</a> <a href="https://github.com/JuNaSlaCo/HiveAssets/commits?author=NaweDev" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Cocoagneau"><img src="https://avatars.githubusercontent.com/u/201631272?v=4?s=100" width="100px;" alt="Cocoagneau"/><br /><sub><b>Cocoagneau</b></sub></a><br /><a href="#ideas-Cocoagneau" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Slayjojo"><img src="https://avatars.githubusercontent.com/u/201461005?v=4?s=100" width="100px;" alt="Slayjojo"/><br /><sub><b>Slayjojo</b></sub></a><br /><a href="#ideas-Slayjojo" title="Ideas, Planning, & Feedback">🤔</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ju-78"><img src="https://avatars.githubusercontent.com/u/201461159?v=4?s=100" width="100px;" alt="Ju-78"/><br /><sub><b>Ju-78</b></sub></a><br /><a href="#ideas-Ju-78" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/NaweDev"><img src="https://avatars.githubusercontent.com/u/96984101?v=4?s=100" width="100px;" alt="Nawe_Dev"/><br /><sub><b>Nawe_Dev</b></sub></a><br /><a href="https://github.com/JuNaSlaCo/HiveAssets/commits?author=NaweDev" title="Code">💻</a> <a href="#ideas-NaweDev" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-NaweDev" title="Design">🎨</a> <a href="https://github.com/JuNaSlaCo/HiveAssets/pulls?q=is%3Apr+reviewed-by%3ANaweDev" title="Reviewed Pull Requests">👀</a> <a href="#infra-NaweDev" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-NaweDev" title="Maintenance">🚧</a> <a href="#projectManagement-NaweDev" title="Project Management">📆</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Cocoagneau"><img src="https://avatars.githubusercontent.com/u/201631272?v=4?s=100" width="100px;" alt="Cocoagneau"/><br /><sub><b>Cocoagneau</b></sub></a><br /><a href="#ideas-Cocoagneau" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-Cocoagneau" title="Design">🎨</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Slayjojo"><img src="https://avatars.githubusercontent.com/u/201461005?v=4?s=100" width="100px;" alt="Slayjojo"/><br /><sub><b>Slayjojo</b></sub></a><br /><a href="https://github.com/JuNaSlaCo/HiveAssets/commits?author=Slayjojo" title="Documentation">📖</a> <a href="#example-Slayjojo" title="Examples">💡</a> <a href="#content-Slayjojo" title="Content">🖋</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Ju-78"><img src="https://avatars.githubusercontent.com/u/201461159?v=4?s=100" width="100px;" alt="Ju-78"/><br /><sub><b>Ju-78</b></sub></a><br /><a href="#design-Ju-78" title="Design">🎨</a> <a href="#content-Ju-78" title="Content">🖋</a></td>
     </tr>
   </tbody>
   <tfoot>
@@ -110,10 +110,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
   </tfoot>
 </table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

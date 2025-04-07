@@ -1,7 +1,4 @@
 # HiveAssets
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 HiveAssets est un gestionnaire d'assets (textures, modèles, etc.) permettant d'organiser et de centraliser divers fichiers multimédias.
 

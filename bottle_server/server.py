@@ -73,19 +73,11 @@ if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
 
 """
 route vers la page d'accueil
-:return: la page d'accueil du site
-"""
-@route('/')
-def home():
-    return template("home.html", liste_des_fichiers = liste_des_fichiers(), files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
-
-"""
-route de la barre de recherche
 recupere ce qui est taper dans le formulaire (barre de recherche)
-:return:renvoie la liste de touts les fichiers correspondants a la recherche formuler
+:return: la page d'accueil du site ou renvoie la liste de touts les fichiers correspondants a la recherche formuler
 """
-@route('/recherche', method=['POST'])
-def recherche():
+@route('/', method=["GET", "POST"])
+def home():
     file_list = liste_des_fichiers()
     search_query = request.forms.get('search_query') 
     if not search_query:
@@ -167,6 +159,16 @@ def settings():
             dirconfig.remove(delete)
             modifier_config("scan_directory", dirconfig)
             reloadexplorer = True
+
+    elif action == "install_hdr":
+        modifier_config("3Dviewerhdrname", "")
+        hdr = ""
+        iframereload = True
+
+    elif action == "uninstall_hdr":
+        modifier_config("3Dviewerhdrname", "")
+        hdr = ""
+        iframereload = True
 
     elif action == "remove_hdr":
         modifier_config("3Dviewerhdrname", "")

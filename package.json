@@ -1,6 +1,6 @@
 {
-  "name": "electron",
-  "version": "0.1.8",
+  "name": "hiveassets",
+  "version": "0.1.9",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -70,6 +70,7 @@
     }
   },
   "dependencies": {
+    "electron-log": "^5.3.3",
     "electron-updater": "^6.6.2",
     "ffmpeg-static": "^5.2.0",
     "tree-kill": "^1.2.2"

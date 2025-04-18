@@ -50,7 +50,7 @@ function createWindow() {
 
 const unquotePath = (quotePath) => {
   try {
-    return decodeURIComponent(quotePath);
+    return Buffer.from(quotePath, 'base64').toString('utf-8');
   } catch (e) {
     console.warn("Erreur de décodage du repertoire :", quotePath);
     log.warn("Erreur de décodage du repertoire :", quotePath);
@@ -127,6 +127,7 @@ app.whenReady().then(() => {
     if (!win) return
 
     const decodePath = unquotePath(file);
+    console.log(decodePath)
     const ext = path.extname(decodePath);
     let icon;
 

@@ -5,12 +5,13 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, random, string, ffmpeg
+import os, json, random, string, ffmpeg, threading, time
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from urllib.parse import unquote, quote
 from constants import *
 from config import *
+from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -23,26 +24,69 @@ def creer_scanfile():
         json.dump(DONNEES_SCAN, f, indent=4)
     
 # Cette fonction permet de lire le fichier de cache
-def lire_cachefile(): 
+def lire_cachefile():
+    global modifoncache, cachecontent
     if os.path.exists(fichier_cache):
-        with open(fichier_cache, "r", encoding="utf-8") as f:
-            try: 
-                out = json.load(f)
-            except json.JSONDecodeError:
-                verif_fichier_config()
-                out = json.load(f)
-            return out
+        if modifoncache:
+            with open(fichier_cache, "r", encoding="utf-8") as f:
+                try: 
+                    out = json.load(f)
+                except json.JSONDecodeError:
+                    verif_fichier_config()
+                    out = json.load(f)
+                modifoncache = False
+                cachecontent = out
+                return cachecontent
+        else:
+            return cachecontent
     else:
         return dict()
 
-# Cette fonction permet de modifier le fichier de cache
-def modifier_cachefile(cle, valeur): 
-    cache = lire_cachefile()
-    if cache is None:
-        cache = {}
-    cache[cle] = valeur
-    with open(fichier_cache, "w", encoding="utf-8") as f:
-        json.dump(cache, f, indent=4)
+# Ces fonctions permettent de modifier le cache ainsi que le fichier de cache
+def modifier_cachefile():
+    global modifiercache, cachecontent, modifoncache
+    with threading.Lock():
+        time.sleep(5)
+        with open(fichier_cache, "w", encoding="utf-8") as f:
+            json.dump(cachecontent, f, indent=4)
+        print("modif cache")
+        modifiercache = False
+        modifoncache = True
+
+def modifier_cache(cle, valeur, mainkey):
+    global modifiercache
+    print(cle, valeur)
+    cachecontent[mainkey].append({cle: valeur})
+    if not modifiercache:
+        modifiercache = True
+        print("modif cache call")
+        threading.Thread(target=modifier_cachefile, daemon=True).start()
+
+def convertimage(filepath, size, cache_part):
+    try:
+        with Image.open(filepath) as i:
+            i = i.convert("RGBA")
+
+            if size != -1:
+                if i.size[0] > size or i.size[1] > size:
+                    i = i.resize((size, size))
+                
+            newname = ""
+            cachelist = lire_cachefile().get(cache_part, [])
+
+            while newname == "" or newname in cachelist:
+                liste = random.choices(string.ascii_lowercase, k=10)
+                for l in liste:
+                    newname += l
+            newname = (newname + ".png")
+
+            cache_path = os.path.join(cache_folder, newname)
+
+            i.save(cache_path, format="PNG")
+            modifier_cache(filepath, newname, cache_part)
+
+    except Exception as e:
+        print(f"Erreur lors de la conversion {e}")
 
 """
 Cette fonction permet de faire une liste de tout les fichiers se trouvant dans les dossiers a scanner 
@@ -63,7 +107,6 @@ def liste_des_fichiers():
     return list
 
 # Autre code
-
 verif_fichier_config()
 if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:
@@ -95,13 +138,12 @@ def home():
 route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
 :return:sort soit le model soit la texture demander
 """
-@route('/model_loader_iframe/<type>/<path:path>/<filename>') 
-def model_loader_iframe(type, path, filename):
-    path = unquote(path)
-    filename = unquote(filename)
-    file_path = os.path.join(path, filename).replace("\\", "/")
+@route('/model_loader_iframe/<type>/<b64path>') 
+def model_loader_iframe(type, b64path):
+    type = urlsafe_b64decode(type.encode("ascii")).decode("utf-8").replace("\\", "/")
+    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
     hdr = lire_config().get("3Dviewerhdrname", "")
-    if path == '"LOGO"' and filename == '"LOGO"':
+    if file_path.split('/')[-1] == 'LOGO':
         file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
     if not os.path.exists(os.path.join(hdr_dir, hdr)):
         modifier_config("3Dviewerhdrname", "")
@@ -113,7 +155,7 @@ def model_loader_iframe(type, path, filename):
         texture = ""
         model = file_path
     typef = type
-    return template("model_loader.html", hdr = hdr, model = quote(model), texture = quote(texture), typef = typef)
+    return template("model_loader.html", hdr = hdr, model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
 
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
@@ -195,50 +237,36 @@ def settings():
 route qui permet de renvoyer l'image originale demandée ou l'image convertie
 :return: renvoi l'image original ou convertie pqr le programme
 """
-@route('/texturesfiles/<path:path>/<filename>') 
-def textures_files(path, filename):
-    path = os.sep.join([*unquote(path).split("/")])
-    filename = unquote(filename)
-    file_path = os.path.join("\\", path, filename)
+@route('/texturesfiles/<b64path>')
+def textures_files(b64path):
+    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
+
     if not os.path.exists(file_path):
         raise HTTPResponse("non trouvé", status=404)
-    for l in lire_cachefile().get("preview_cache", list()):
+    for l in lire_cachefile().get("cache", list()):
         if file_path in l:
             for k, v in l.items():
-                if not os.path.exists(v):
+                if not os.path.exists(os.path.join(cache_folder, v)):
                     break
                 else:
                     return static_file(v, root=cache_folder)
-    extension = filename.lower().split('.')[-1]
+    extension = file_path.lower().split('.')[-1]
     types = ["tif", "tiff", "tga", "dds", "exr"]
 
     if extension in types:
-        try:
-            with Image.open(file_path) as i:
-                i = i.convert("RGBA")
-                
-                newname = ""
-                cachelist = lire_cachefile().get("preview_cache", [])
+        print(file_path)
+        threading.Thread(target=convertimage, args=(file_path, -1, "cache"), daemon=True).start()
 
-                while newname == "" or newname in cachelist:
-                    liste = random.choices(string.ascii_lowercase, k=10)
-                    for l in liste:
-                        newname += l
-                newname = (newname + ".png")
+        while True:
+            for l in lire_cachefile().get("cache", list()):
+                if file_path in l:
+                    for p, v in l.items():
+                        cached_path = os.path.join(cache_folder, v)
+                        if os.path.exists(cached_path):
+                            return static_file(v, root=cache_folder)
+            time.sleep(0.5)
 
-                cache_path = os.path.join(cache_folder, newname)
-
-                old_cache = list(lire_cachefile().get("preview_cache", []))
-                old_cache.append({file_path: cache_path})
-
-                i.save(cache_path, format="PNG")
-                modifier_cachefile("preview_cache", old_cache)
-
-                return static_file(newname, root=cache_folder)
-            
-        except Exception as e:
-            return "Erreur {e}", 500
-    return static_file(filename, root=os.path.dirname(file_path))
+    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
 
 """
 route qui permet d'obtenir un fichier grâce a son lien
@@ -253,69 +281,51 @@ Route pour les previews des textures sur la page web
 Permet d'obtenir une image a prévisualiser, si le format est inconnu le fichier est converti avec une taille de 128px par 128px
 :return: renvoie soit une image convertie soit l'original en 128px*128px
 """
-@route('/texturespreview/<path:path>/<filename>') 
-def textures_preview(path, filename):
-    file_path = os.path.join(path, filename).replace("\\", "/")
+@route('/texturespreview/<b64path>')
+def textures_preview(b64path):
+    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
 
     if not os.path.exists(file_path):
         raise HTTPResponse("Texture non trouvé", status=404)
-    for l in lire_cachefile().get("cache", list()):
+    for l in lire_cachefile().get("preview_cache", list()):
         if file_path in l:
             for k, v in l.items():
-                if not os.path.exists(v):
+                if not os.path.exists(os.path.join(cache_folder, v)):
                     break
                 else:
                     return static_file(v, root=cache_folder)
         
-    extension = filename.lower().split('.')[-1]
+    extension = file_path.lower().split('.')[-1]
     types = ["tif", "tiff", "tga", "dds", "exr"]
 
     if extension in types:
-        try:
-            with Image.open(file_path) as i:
-                i = i.convert("RGBA")
+        threading.Thread(target=convertimage, args=(file_path, 128, "preview_cache"), daemon=True).start()
 
-                if i.size[0] > 128 or i.size[1] > 128:
-                    i = i.resize((128, 128))
-                
-                newname = ""
-                cachelist = lire_cachefile().get("cache", [])
+        while True:
+            for l in lire_cachefile().get("preview_cache", list()):
+                if file_path in l:
+                    for p, v in l.items():
+                        cached_path = os.path.join(cache_folder, v)
+                        if os.path.exists(cached_path):
+                            return static_file(v, root=cache_folder)
+            time.sleep(0.5)
 
-                while newname == "" or newname in cachelist:
-                    liste = random.choices(string.ascii_lowercase, k=10)
-                    for l in liste:
-                        newname += l
-                newname = (newname + ".png")
-
-                cache_path = os.path.join(cache_folder, newname)
-
-                old_cache = list(lire_cachefile().get("cache", []))
-                old_cache.append({file_path: cache_path})
-
-                i.save(cache_path, format="PNG")
-                modifier_cachefile("cache", old_cache)
-
-                return static_file(newname, root=cache_folder)
-            
-        except Exception as e:
-            return "Erreur {e}", 500
-
-    return static_file(filename, root=path)
+    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
  
 """
 Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si possible)
 :return: nous ouvre l'explorer avec le fichier présélectionner si  disponible
 """
-@route('/openfileonsystem/<path:path>/<filename>') 
-def openfileonsystem(path, filename):
+@route('/openfileonsystem/<b64path>') 
+def openfileonsystem(b64path):
+    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
+    file_path = f'"{file_path}"'
     if system == "Windows":
-        file_path = unquote(os.path.join(path, filename).replace("/", "\\"))
+        file_path = file_path.replace("/", "\\")
         os.system(f'explorer /select, "{file_path}"')
     elif system == "Darwin":
-        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         os.system(f'open -R "{file_path}"')
     elif system == "Linux":
-        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
         print(environnement)
         if "gnome" in environnement :
@@ -331,7 +341,6 @@ def openfileonsystem(path, filename):
         else:
             os.system(f'xdg-open "{file_path}"')
     else:
-        file_path = unquote(os.path.join(path, filename).replace("\\", "/"))
         os.system(f'xdg-open "{file_path}"')
     # Renvoie un script js pour fermer la page web
     return ''' 
@@ -346,21 +355,20 @@ def openfileonsystem(path, filename):
     </html>
     '''
 
-@route('/getaudiofile/<path:path>/<filename>') 
-def getaudiofile(path, filename):
-    path = os.sep.join([*unquote(path).split("/")])
-    filename = unquote(filename)
-    file_path = os.path.join("\\", path, filename)
+@route('/getaudiofile/<b64path>') 
+def getaudiofile(b64path):
+    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
+    print(file_path)
     if not os.path.exists(file_path):
         raise HTTPResponse("Sound Wave non trouvé", status=404)
     for l in lire_cachefile().get("audio_cache", list()):
         if file_path in l:
             for k, v in l.items():
-                if not os.path.exists(v):
+                if not os.path.exists(os.path.join(cache_folder, v)):
                     break
                 else:
                     return static_file(v, root=cache_folder)
-    extension = filename.lower().split('.')[-1]
+    extension = file_path.lower().split('.')[-1]
     types = ["wav", "ogg", "flac", "aac"]
 
     if extension in types:
@@ -375,20 +383,19 @@ def getaudiofile(path, filename):
             newname = (newname + ".mp3")
 
             cache_path = os.path.join(cache_folder, newname)
-            old_cache = list(lire_cachefile().get("audio_cache", []))
-            old_cache.append({file_path: cache_path})
+            print(file_path)
 
             ffmpeg.input(file_path).output(cache_path, audio_bitrate='192k').run(overwrite_output=True, cmd=ffmpeg_path)
-            modifier_cachefile("audio_cache", old_cache)
+            modifier_cache(file_path, newname, "audio_cache")
             return static_file(newname, root=cache_folder)
         except ffmpeg.Error as e:
             print(f"Erreur FFmpeg : {e}")
             raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=404)
-    return static_file(filename, root=os.path.dirname(file_path))
+    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
 
 @route("/ping")
 def ping():
     return "pong"
 
 # Execution du serveur Bottle
-run(host="localhost", port=5069)
+run(host="localhost", port=5069, server='paste')

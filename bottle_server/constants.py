@@ -15,6 +15,9 @@ curdir = os.path.dirname(__file__)
 static_dir = os.path.join(curdir, "static")
 hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
 ffmpeg_path = os.getenv("FFMPEG_PATH")
+modifoncache = True
+modifiercache = False
+cachecontent = {}
 # Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",
@@ -59,7 +62,7 @@ ASSETS_TYPES = ["Textures", "Models", "Sound Waves"]
  # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles
  # avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement. 
 DONNEES_CACHE = {
-    "cache" : [],
     "preview_cache": [],
+    "cache" : [],
     "audio_cache": []
 }

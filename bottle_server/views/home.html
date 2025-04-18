@@ -1,4 +1,4 @@
-% from urllib.parse import quote
+% from base64 import urlsafe_b64encode
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/static/javascript/script.js"></script>
 </head>
 <body>
-    <iframe class="viewer" id="viewer" title="Model Loader Iframe" src='/model_loader_iframe/Texture/"LOGO"/"LOGO"'></iframe>
+    <iframe class="viewer" id="viewer" title="Model Loader Iframe" src='/model_loader_iframe/{{urlsafe_b64encode("Texture".encode("utf-8")).decode("ascii")}}/{{urlsafe_b64encode("LOGO".encode("utf-8")).decode("ascii")}}'></iframe>
     <div class="main">
         <div class="filtres" id="filtres"> <!--partie des filtres -->
             <form action="update" method="post">
@@ -66,15 +66,15 @@
                 % for l in liste_des_fichiers:
                     %l[2] = l[2].replace("\\", "/")
                     % if l[1] == "Sound Waves":
-                <button class="butimg" onclick="playaudio('/getaudiofile/{{quote(l[2])}}')" ondblclick="openfileonsystem('/openfileonsystem/{{quote(l[2])}}')" title="{{l[0]}}">
+                <button class="butimg" onclick="playaudio('/getaudiofile/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" ondblclick="openfileonsystem('/openfileonsystem/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
                     % else:
-                <button class="butimg" onclick='reloadiframe("/model_loader_iframe/{{quote(l[1])}}/{{quote(l[2])}}")' ondblclick="openfileonsystem('/openfileonsystem/{{quote(l[2])}}')" title="{{l[0]}}">
+                <button class="butimg" onclick='reloadiframe("/model_loader_iframe/{{urlsafe_b64encode(l[1].encode("utf-8")).decode("ascii")}}/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}")' ondblclick="openfileonsystem('/openfileonsystem/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
                     % end
                     <div class="filecontent">
                         % if l[1] == "Texture":
-                            <img class="imgexplorer" src="/texturespreview/{{l[2]}}" loading="lazy" onmousedown="dragFile('{{quote(l[2])}}')" title="{{l[0]}}">
+                            <img class="imgexplorer" src="/texturespreview/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}" loading="lazy" onmousedown="dragFile('{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
                         % else:
-                            <img class="imgexplorer" src="/static/icons/unknown_file.png" loading="lazy" onmousedown="dragFile('{{quote(l[2])}}')" title="{{l[0]}}">
+                            <img class="imgexplorer" src="/static/icons/unknown_file.png" loading="lazy" onmousedown="dragFile('{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
                         % end
                         <p class="filename">{{l[0]}}</p>
                         <p class="filetype">{{l[1]}}</p>

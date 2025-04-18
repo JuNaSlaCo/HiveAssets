@@ -9,6 +9,8 @@ Les versions compilées de HiveAssets sont disponibles dans la section **Release
 
 Si vous souhaitez modifier le programme ou explorer son fonctionnement, vous pouvez télécharger l'archive du code source directement depuis GitHub.
 
+Le logiciel est toujours en développement, toutes les fonctionnalités ne sont pas encore mises au point.
+
 ## Installation pour le Développement
 
 ### Prérequis

@@ -8,7 +8,6 @@ ici se trouve toutes les routes ainsi que des fonctions
 import os, json, random, string, ffmpeg, threading, time
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
-from urllib.parse import unquote, quote
 from constants import *
 from config import *
 from base64 import urlsafe_b64decode, urlsafe_b64encode
@@ -188,7 +187,7 @@ def settings():
     action = request.forms.get("action")
 
     if action == "add_repertoire":
-        repertoire = str(unquote(request.forms.get("repertoirepath")))
+        repertoire = str(urlsafe_b64decode(request.forms.get("repertoirepath").encode("ascii")).decode("utf-8").replace("\\", "/"))
         repertoire = repertoire.replace('"', '')
         if repertoire not in dirconfig and repertoire != "":
             dirconfig.append(repertoire)
@@ -196,7 +195,8 @@ def settings():
             reloadexplorer = True
     
     elif action == "del_repertoire":
-        delete = unquote(request.forms.get("dir_delete"))
+        print(request.forms.get("dir_delete"))
+        delete = str(urlsafe_b64decode(request.forms.get("dir_delete").encode("ascii")).decode("utf-8").replace("\\", "/"))
         if delete and delete in dirconfig:
             dirconfig.remove(delete)
             modifier_config("scan_directory", dirconfig)
@@ -318,8 +318,7 @@ Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si 
 """
 @route('/openfileonsystem/<b64path>') 
 def openfileonsystem(b64path):
-    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
-    file_path = f'"{file_path}"'
+    file_path = str(urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/"))
     if system == "Windows":
         file_path = file_path.replace("/", "\\")
         os.system(f'explorer /select, "{file_path}"')

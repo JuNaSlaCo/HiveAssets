@@ -1,4 +1,4 @@
-% from urllib.parse import quote
+% from base64 import urlsafe_b64encode
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,10 +19,6 @@
         % if reloadexplorer == True:
         window.parent.location.reload();
         % end
-        const encodedirectory = () => {
-            const directory = document.getElementById("repertoirepath");
-            directory.value = encodeURIComponent(directory.value);
-        }
         window.addEventListener('DOMContentLoaded', () => {
             const button = document.getElementById('scandirectory');
             button.addEventListener('click', () => {
@@ -37,6 +33,10 @@
                 but.click()
             }
         });
+        function delrep(chemin){
+            const del = document.getElementById('delr');
+            del.value = chemin
+        }
     </script>
 </head>
 <body>
@@ -45,17 +45,17 @@
         <input id="scandirectory" name="repertoire" type="button" value="Ajouter un dossier" />
         <input id="repertoirepath" name="repertoirepath" type="text" readonly hidden/>
 
-        <button type="submit" name="action" value="add_repertoire" onclick="encodedirectory()" id="adddirectorytoconfig" hidden></button>
+        <button type="submit" name="action" value="add_repertoire" id="adddirectorytoconfig" hidden></button>
         <ul>
             % for f in scan_dir:
             <li>
                 <p>{{f}}</p>
-                <button type="submit" name="action" value="del_repertoire">
+                <button type="submit" name="action" value="del_repertoire" onclick='delrep("{{urlsafe_b64encode(f.encode("utf-8")).decode("ascii")}}")'>
                     Supprimer
                 </button>
-                <input type="hidden" name="dir_delete" value="{{quote(f)}}">
             </li>
             % end
+            <input id="delr" type="hidden" name="dir_delete" value="">
         </ul>
         <h2>Options du viewer 3D :</h2>
         <select name="select_hdr">

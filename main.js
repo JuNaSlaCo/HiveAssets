@@ -155,6 +155,7 @@ app.whenReady().then(() => {
     });
   
     if (!result.canceled && result.filePaths.length > 0) {
+      result.filePaths[0] = Buffer.from(result.filePaths[0], 'utf-8').toString('base64');
       event.sender.send('selectfolder', result.filePaths[0]);
       console.info(result);
       log.debug(result);

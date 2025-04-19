@@ -5,7 +5,7 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, random, string, ffmpeg, threading, time
+import os, json, random, string, ffmpeg, threading, time, subprocess
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from constants import *
@@ -14,6 +14,26 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
+
+if system == "Windows":
+    import pythoncom
+    from win32com.shell import shell
+
+    def reveal_in_explorer(file_path):
+        pythoncom.CoInitialize()
+        
+        file_path = os.path.abspath(file_path)
+        folder_path = os.path.dirname(file_path)
+        file_name = os.path.basename(file_path)
+
+        folder_pidl, _ = shell.SHILCreateFromPath(folder_path, 0)
+
+        desktop = shell.SHGetDesktopFolder()
+        folder = desktop.BindToObject(folder_pidl, None, shell.IID_IShellFolder)
+
+        item_pidl = folder.ParseDisplayName(0, None, file_name)[1]
+
+        shell.SHOpenFolderAndSelectItems(folder_pidl, (item_pidl,), 0)
 
 # Définition des fonctions
 
@@ -142,7 +162,7 @@ def model_loader_iframe(type, b64path):
     type = urlsafe_b64decode(type.encode("ascii")).decode("utf-8").replace("\\", "/")
     file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
     hdr = lire_config().get("3Dviewerhdrname", "")
-    if file_path.split('/')[-1] == 'LOGO':
+    if os.path.basename(file_path) == 'LOGO':
         file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
     if not os.path.exists(os.path.join(hdr_dir, hdr)):
         modifier_config("3Dviewerhdrname", "")
@@ -266,7 +286,7 @@ def textures_files(b64path):
                             return static_file(v, root=cache_folder)
             time.sleep(0.5)
 
-    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
+    return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
 
 """
 route qui permet d'obtenir un fichier grâce a son lien
@@ -310,7 +330,7 @@ def textures_preview(b64path):
                             return static_file(v, root=cache_folder)
             time.sleep(0.5)
 
-    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
+    return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
  
 """
 Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si possible)
@@ -319,28 +339,30 @@ Permet d'ouvrir l'explorateur de fichier avec le fichier préséléctionné (si 
 @route('/openfileonsystem/<b64path>') 
 def openfileonsystem(b64path):
     file_path = str(urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/"))
+    file_path = os.path.abspath(file_path)
+    print(file_path)
     if system == "Windows":
         file_path = file_path.replace("/", "\\")
-        os.system(f'explorer /select, "{file_path}"')
+        reveal_in_explorer(file_path)
     elif system == "Darwin":
-        os.system(f'open -R "{file_path}"')
+        subprocess.Popen(f'open -R "{file_path}"')
     elif system == "Linux":
         environnement = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
         print(environnement)
         if "gnome" in environnement :
-            os.system(f'nautilus --browser "{file_path}"')
+            subprocess.Popen(f'nautilus --browser "{file_path}"')
         elif "xcfe" in environnement :
-            os.system(f'thunar "{file_path}')
+            subprocess.Popen(f'thunar "{file_path}')
         elif "lxde" in environnement :
-            os.system(f'pacmanfm "{file_path}"')
+            subprocess.Popen(f'pacmanfm "{file_path}"')
         elif "cinnamon" in environnement :
-            os.system(f'nemo "{file_path}"')
+            subprocess.Popen(f'nemo "{file_path}"')
         if "unity" in environnement :
-            os.system(f'nautilus --browser "{file_path}"')
+            subprocess.Popen(f'nautilus --browser "{file_path}"')
         else:
-            os.system(f'xdg-open "{file_path}"')
+            subprocess.Popen(f'xdg-open "{file_path}"')
     else:
-        os.system(f'xdg-open "{file_path}"')
+        subprocess.Popen(f'xdg-open "{file_path}"')
     # Renvoie un script js pour fermer la page web
     return ''' 
     <html>
@@ -357,7 +379,6 @@ def openfileonsystem(b64path):
 @route('/getaudiofile/<b64path>') 
 def getaudiofile(b64path):
     file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
-    print(file_path)
     if not os.path.exists(file_path):
         raise HTTPResponse("Sound Wave non trouvé", status=404)
     for l in lire_cachefile().get("audio_cache", list()):
@@ -390,7 +411,7 @@ def getaudiofile(b64path):
         except ffmpeg.Error as e:
             print(f"Erreur FFmpeg : {e}")
             raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=404)
-    return static_file(file_path.split('/')[-1], root=os.path.dirname(file_path))
+    return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
 
 @route("/ping")
 def ping():

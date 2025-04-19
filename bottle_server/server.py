@@ -11,6 +11,9 @@ from PIL import Image
 from constants import *
 from config import *
 from base64 import urlsafe_b64decode, urlsafe_b64encode
+from queue import Queue
+
+queue = Queue()
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -34,6 +37,15 @@ if system == "Windows":
         item_pidl = folder.ParseDisplayName(0, None, file_name)[1]
 
         shell.SHOpenFolderAndSelectItems(folder_pidl, (item_pidl,), 0)
+
+def worker():
+    while True:
+        filepath, size, cache_part = queue.get()
+        convertimage(filepath, size, cache_part)
+        queue.task_done()
+
+for loop in range(NUM_WORKERS):
+    threading.Thread(target=worker, daemon=True).start()
 
 # Définition des fonctions
 
@@ -68,7 +80,6 @@ def modifier_cachefile():
         time.sleep(5)
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(cachecontent, f, indent=4)
-        print("modif cache")
         modifiercache = False
         modifoncache = True
 
@@ -251,7 +262,7 @@ def settings():
     if ignoreunknownfiles == False:
         iuf = ""
 
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer)
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS)
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie
@@ -319,16 +330,10 @@ def textures_preview(b64path):
     types = ["tif", "tiff", "tga", "dds", "exr"]
 
     if extension in types:
-        threading.Thread(target=convertimage, args=(file_path, 128, "preview_cache"), daemon=True).start()
-
-        while True:
-            for l in lire_cachefile().get("preview_cache", list()):
-                if file_path in l:
-                    for p, v in l.items():
-                        cached_path = os.path.join(cache_folder, v)
-                        if os.path.exists(cached_path):
-                            return static_file(v, root=cache_folder)
-            time.sleep(0.5)
+        file_deja_queue = any(file_path in task for task in list(queue.queue))
+        if not file_deja_queue:
+            queue.put((file_path, 128, "preview_cache"))
+        raise HTTPResponse("Conversion en cours", status=202)
 
     return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
  

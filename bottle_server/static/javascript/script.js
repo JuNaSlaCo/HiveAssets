@@ -48,3 +48,8 @@ window.electronAPI.onFolderSelected((repPath) => {
         iframe.contentWindow.postMessage({ action: 'folder-selected', path: repPath }, '*');
     }
 });
+function refreshPreview(img) {
+    setTimeout(() => {
+        img.src = img.src;
+    }, 1500);
+}

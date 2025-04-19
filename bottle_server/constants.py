@@ -1,6 +1,6 @@
 #Projet : HiveAssets
 #Auteurs : Judicaël Lenglet, Ewan Jannot, Joan Molle, Maël Pouvreau
-import os, platform
+import os, platform, multiprocessing
 """
 Définition de toutes les variables
 """
@@ -66,3 +66,4 @@ DONNEES_CACHE = {
     "cache" : [],
     "audio_cache": []
 }
+NUM_WORKERS = multiprocessing.cpu_count()

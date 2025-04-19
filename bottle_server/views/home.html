@@ -72,7 +72,7 @@
                     % end
                     <div class="filecontent">
                         % if l[1] == "Texture":
-                            <img class="imgexplorer" src="/texturespreview/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}" loading="lazy" onmousedown="dragFile('{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
+                            <img class="imgexplorer" src="/texturespreview/{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}" loading="lazy" onmousedown="dragFile('{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}" onerror="refreshPreview(this)">
                         % else:
                             <img class="imgexplorer" src="/static/icons/unknown_file.png" loading="lazy" onmousedown="dragFile('{{urlsafe_b64encode(l[2].encode("utf-8")).decode("ascii")}}')" title="{{l[0]}}">
                         % end

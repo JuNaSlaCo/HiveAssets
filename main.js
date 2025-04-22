@@ -10,15 +10,14 @@ let ffmpegPath = require('ffmpeg-static');
 
 if (ffmpegPath.includes('app.asar')) {
   ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
+};
+if (enDev) {
+  serverPath = path.join(__dirname, 'bottle_server', 'dist', 'server.exe');
+  defaulticon = path.join(__dirname, 'build_assets', 'icon.png');
+} else {
+  serverPath = path.join(process.resourcesPath, 'bottle_server', 'server.exe');
+  defaulticon = path.join(process.resourcesPath, 'icon.png');
 }
-
-const serverPath = enDev
-    ? path.join(__dirname, 'bottle_server', 'dist', 'server.exe')
-    : path.join(process.resourcesPath, 'bottle_server', 'server.exe');
-
-const defaulticon = enDev
-    ? path.join(__dirname, 'build_assets', 'icon.png')
-    : path.join(process.resourcesPath, 'icon.png');
 
 let server;
 let win;
@@ -52,7 +51,6 @@ const unquotePath = (quotePath) => {
   try {
     return Buffer.from(quotePath, 'base64').toString('utf-8');
   } catch (e) {
-    console.warn("Erreur de décodage du repertoire :", quotePath);
     log.warn("Erreur de décodage du repertoire :", quotePath);
     return quotePath;
   }
@@ -68,33 +66,28 @@ function startServer() {
   });
 
   server.on('exit', (code) => {
-    console.log(`Server exited with code: ${code}`);
     log.debug(`Server exited with code: ${code}`);
   });
 
   server.on('error', (err) => {
-    console.error(`Error starting server: ${err.message}`);
     log.error(`Error starting server: ${err.message}`);
   });
 }
 
 function stopServer() {
   if (server) {
-    console.log("Arrêt du serveur");
     log.debug("Arrêt du serveur");
     kill(server.pid, 'SIGTERM', (err) => {
       if (err) {
-        console.error("Erreur de l'arrêt du serveur :", err);
         log.error("Erreur de l'arrêt du serveur :", err);
       } else {
-        console.log("Serveur arrêté.");
         log.debug("Serveur arrêté.");
       }
       server = null;
     });
   } else {
     console.log("Le serveur n'est pas démarré.");
-  }
+  };
 }
 
 function checkServerReady() {
@@ -111,23 +104,21 @@ function checkServerReady() {
               }, 1000);
           }
       }).on("error", () => {
-          console.log("Serveur pas encore prêt...");
           log.debug("Serveur pas encore prêt...");
       });
   }, 1000);
 }
 
 app.whenReady().then(() => {
-  autoUpdater.checkForUpdatesAndNotify();
   startServer();
   createWindow();
 
   ipcMain.on('drag-file', (event, { file }) => {
-    const win = BrowserWindow.getFocusedWindow()
+    const win = BrowserWindow.getFocusedWindow();
     if (!win) return
 
     const decodePath = unquotePath(file);
-    console.log(decodePath)
+    log.debug(decodePath);
     const ext = path.extname(decodePath);
     let icon;
 
@@ -146,7 +137,7 @@ app.whenReady().then(() => {
     win.webContents.startDrag({
       file: decodePath,
       icon: icon
-    })
+    });
   })
 
   ipcMain.handle('openfolder', async (event) => {
@@ -157,7 +148,6 @@ app.whenReady().then(() => {
     if (!result.canceled && result.filePaths.length > 0) {
       result.filePaths[0] = Buffer.from(result.filePaths[0], 'utf-8').toString('base64');
       event.sender.send('selectfolder', result.filePaths[0]);
-      console.info(result);
       log.debug(result);
     } else {
       event.sender.send('selectfolder', null);
@@ -173,31 +163,43 @@ app.whenReady().then(() => {
 });
 
 autoUpdater.on("update-available", () => {
-  console.log("Update available !");
+  win.webContents.send("update-available");
   log.debug("Update available !");
   finishupdate = false;
 })
 
+autoUpdater.on("update-not-available", () => {
+  win.webContents.send("update-not-available");
+  log.info("No update available.");
+});
+
 autoUpdater.on("checking-for-update", () => {
-  console.log("checking for update");
   log.debug("checking for update");
 })
 
 autoUpdater.on("download-progress", (progressTrack) => {
-  console.log(progressTrack);
+  win.webContents.send("update-progress", progressTrack);
   log.debug(progressTrack);
 })
 
 autoUpdater.on("error", (err) => {
-  console.log("Erreur de l'auto-updater : ", err);
   log.debug("Erreur de l'auto-updater : ", err);
 })
 
 autoUpdater.on("update-downloaded", () => {
-  finishupdate = true
-  console.log("Download finish !");
+  win.webContents.send("update-downloaded");
+  finishupdate = true;
   log.debug("Download finish !");
 })
+
+ipcMain.on('restart-app', () => {
+  stopServer();
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.on('check-for-update', () => {
+  autoUpdater.checkForUpdates();
+});
 
 app.on("window-all-closed", () => {
   stopServer();
@@ -208,7 +210,9 @@ app.on("window-all-closed", () => {
   } else {
     setInterval(() => {
       if (finishupdate){
-        app.quit();
+        if (process.platform !== "darwin") {
+          app.quit();
+        }
       }
     }, 5000);
   }

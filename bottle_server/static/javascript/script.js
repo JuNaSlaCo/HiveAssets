@@ -39,6 +39,12 @@ window.addEventListener('message', (event) => {
     if (event.data.action === 'open-folder-dialog') {
         window.electronAPI.openFolderDialog();
     }
+    if (event.data.action === 'restart-app') {
+        window.electronAPI.restartApp();
+    }
+    if (event.data.action === 'check-for-update') {
+        window.electronAPI.onCheckForUpdate();
+    }
   });
 
 window.electronAPI.onFolderSelected((repPath) => {
@@ -53,3 +59,51 @@ function refreshPreview(img) {
         img.src = img.src;
     }, 1500);
 }
+window.electronAPI.onUpdateAvailable(() => {
+    console.log("Update disponible !");
+    showNotification("Mise a jour disponible !", 7500);
+});
+    
+window.electronAPI.onNoUpdateAvailable(() => {
+    console.log("Aucune mise a jour disponible !");
+    showNotification("Aucune mise a jour disponible !");
+});
+    
+window.electronAPI.onUpdateProgress((event, progress) => {
+    console.log(`Progression : ${progress.percent}%`);
+    showNotification(`Progression : ${progress.percent}%`, 7500);
+});
+    
+window.electronAPI.onUpdateDownloaded(() => {
+    console.log("Téléchargement terminé, prêt à redémarrer !");
+    showNotification("Téléchargement terminé, prêt à redémarrer !", 7500, () => {window.electronAPI.restartApp();}, "Redémarrer");
+});
+
+function showNotification(message, duration = 7500, callbutton = null, callbuttonname = null) {
+    const container = document.getElementById('notifications-container');
+  
+    const notif = document.createElement('div');
+    notif.className = 'notification';
+
+    const msg = document.createElement('span');
+    msg.innerText = message;
+    notif.appendChild(msg);
+
+    if (callbutton !== null) {
+        const notifbtn = document.createElement('button');
+        notifbtn.className = 'notification-button';
+        notifbtn.innerText = callbuttonname;
+        notifbtn.onclick = callbutton;
+        notif.appendChild(notifbtn);
+    }
+  
+    container.appendChild(notif);
+  
+    setTimeout(() => {
+      notif.remove();
+    }, duration);
+}
+window.addEventListener('DOMContentLoaded', () => {
+    window.electronAPI.onCheckForUpdate();
+    console.log("test")
+});

@@ -20,9 +20,13 @@
         window.parent.location.reload();
         % end
         window.addEventListener('DOMContentLoaded', () => {
-            const button = document.getElementById('scandirectory');
-            button.addEventListener('click', () => {
+            const scandirbutton = document.getElementById('scandirectory');
+            scandirbutton.addEventListener('click', () => {
             window.parent.postMessage({ action: 'open-folder-dialog' }, '*');
+            });
+            const restartappbutton = document.getElementById('check-for-update');
+            restartappbutton.addEventListener('click', () => {
+            window.parent.postMessage({ action: 'check-for-update' }, '*');
             });
         });
         window.addEventListener('message', (event) => {
@@ -88,5 +92,6 @@
     </form>
     <p>OS : {{os}}</p>
     <p>Threads number : {{NUM_WORKERS}}</p>
+    <button id="check-for-update">Check for update</button>
 </body>
 </html>

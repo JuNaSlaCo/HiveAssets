@@ -22,7 +22,7 @@ if (enDev) {
 let server;
 let win;
 let serverLoaded = false;
-let finishupdate = true;
+let installupdate = false;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -165,7 +165,6 @@ app.whenReady().then(() => {
 autoUpdater.on("update-available", () => {
   win.webContents.send("update-available");
   log.debug("Update available !");
-  finishupdate = false;
 })
 
 autoUpdater.on("update-not-available", () => {
@@ -178,7 +177,7 @@ autoUpdater.on("checking-for-update", () => {
 })
 
 autoUpdater.on("download-progress", (progressTrack) => {
-  win.webContents.send("update-progress", progressTrack);
+  win.webContents.send("download-progress", progressTrack);
   log.debug(progressTrack);
 })
 
@@ -188,7 +187,7 @@ autoUpdater.on("error", (err) => {
 
 autoUpdater.on("update-downloaded", () => {
   win.webContents.send("update-downloaded");
-  finishupdate = true;
+  installupdate = true;
   log.debug("Download finish !");
 })
 
@@ -203,17 +202,11 @@ ipcMain.on('check-for-update', () => {
 
 app.on("window-all-closed", () => {
   stopServer();
-  if (finishupdate){
+  if (installupdate){
+    autoUpdater.quitAndInstall();
+  } else {
     if (process.platform !== "darwin") {
       app.quit();
-    }
-  } else {
-    setInterval(() => {
-      if (finishupdate){
-        if (process.platform !== "darwin") {
-          app.quit();
-        }
-      }
-    }, 5000);
-  }
+    };
+  };
 });

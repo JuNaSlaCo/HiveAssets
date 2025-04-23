@@ -61,25 +61,28 @@ function refreshPreview(img) {
 }
 window.electronAPI.onUpdateAvailable(() => {
     console.log("Update disponible !");
-    showNotification("Mise a jour disponible !", 7500);
+    showNotification("info", "Mise a jour disponible !", 2000);
 });
     
 window.electronAPI.onNoUpdateAvailable(() => {
     console.log("Aucune mise a jour disponible !");
-    showNotification("Aucune mise a jour disponible !");
+    showNotification("info", "Aucune mise a jour disponible !", 2000);
 });
     
 window.electronAPI.onUpdateProgress((event, progress) => {
     console.log(`Progression : ${progress.percent}%`);
-    showNotification(`Progression : ${progress.percent}%`, 7500);
+    showNotification("info", `Progression : ${int(progress.percent)}%`, 1000);
 });
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("Téléchargement terminé, prêt à redémarrer !", 7500, () => {window.electronAPI.restartApp();}, "Redémarrer");
+    showNotification("info", "Téléchargement terminé, prêt à redémarrer !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer");
 });
 
-function showNotification(message, duration = 7500, callbutton = null, callbuttonname = null) {
+function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null) {
+    const minDuration = 1000;
+    duration = Math.max(duration, minDuration);
+
     const container = document.getElementById('notifications-container');
   
     const notif = document.createElement('div');
@@ -100,8 +103,11 @@ function showNotification(message, duration = 7500, callbutton = null, callbutto
     container.appendChild(notif);
   
     setTimeout(() => {
-      notif.remove();
-    }, duration);
+        notif.classList.add("delnotification");
+        setTimeout(() => {
+            notif.remove();
+          }, 500);
+    }, duration - 500);
 }
 window.addEventListener('DOMContentLoaded', () => {
     window.electronAPI.onCheckForUpdate();

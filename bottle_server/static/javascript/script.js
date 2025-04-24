@@ -76,10 +76,10 @@ window.electronAPI.onUpdateProgress((event, progress) => {
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("info", "Téléchargement terminé, prêt à redémarrer !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer");
+    showNotification("info", "Téléchargement terminé !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant");
 });
 
-function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null) {
+function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudio = null) {
     const minDuration = 1000;
     duration = Math.max(duration, minDuration);
 
@@ -99,6 +99,13 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
         notifbtn.onclick = callbutton;
         notif.appendChild(notifbtn);
     }
+
+    if (notifaudio !== null) {
+        const notifaudio = document.createElement('audio');
+        notifaudio.src = notifaudio;
+        notif.appendChild(notifaudio);
+        notifaudio.play();
+    }
   
     container.appendChild(notif);
   
@@ -106,10 +113,9 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
         notif.classList.add("delnotification");
         setTimeout(() => {
             notif.remove();
-          }, 500);
+        }, 500);
     }, duration - 500);
 }
 window.addEventListener('DOMContentLoaded', () => {
     window.electronAPI.onCheckForUpdate();
-    console.log("test")
 });

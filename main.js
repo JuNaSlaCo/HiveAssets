@@ -169,7 +169,7 @@ autoUpdater.on("update-available", () => {
 
 autoUpdater.on("update-not-available", () => {
   win.webContents.send("update-not-available");
-  log.info("No update available.");
+  log.debug("No update available.");
 });
 
 autoUpdater.on("checking-for-update", () => {
@@ -182,6 +182,7 @@ autoUpdater.on("download-progress", (progressTrack) => {
 })
 
 autoUpdater.on("error", (err) => {
+  win.webContents.send("updater-error", err);
   log.debug("Erreur de l'auto-updater : ", err);
 })
 
@@ -198,6 +199,7 @@ ipcMain.on('restart-app', () => {
 
 ipcMain.on('check-for-update', () => {
   autoUpdater.checkForUpdates();
+  win.webContents.send("updater-error");
 });
 
 app.on("window-all-closed", () => {

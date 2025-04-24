@@ -61,12 +61,12 @@ function refreshPreview(img) {
 }
 window.electronAPI.onUpdateAvailable(() => {
     console.log("Update disponible !");
-    showNotification("info", "Mise a jour disponible !", 2000);
+    showNotification("info", "Mise a jour disponible !", 2000, null, null, "/static/sounds/Notification.mp3");
 });
     
 window.electronAPI.onNoUpdateAvailable(() => {
     console.log("Aucune mise a jour disponible !");
-    showNotification("info", "Aucune mise a jour disponible !", 2000);
+    showNotification("info", "Aucune mise a jour disponible !", 2000, null, null, "/static/sounds/Notification.mp3");
 });
     
 window.electronAPI.onUpdateProgress((event, progress) => {
@@ -76,17 +76,26 @@ window.electronAPI.onUpdateProgress((event, progress) => {
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("info", "Téléchargement terminé !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant");
+    showNotification("info", "Téléchargement terminé !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
 });
 
-function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudio = null) {
+window.electronAPI.onUpdaterError(() => {
+    console.log("Téléchargement terminé, prêt à redémarrer !");
+    showNotification("error", "Erreur de l'updater", 4000, null, null, "/static/sounds/Error.mp3");
+});
+
+function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudiosrc = null) {
     const minDuration = 1000;
     duration = Math.max(duration, minDuration);
 
     const container = document.getElementById('notifications-container');
   
     const notif = document.createElement('div');
-    notif.className = 'notification';
+    if (type === "info") {
+        notif.className = 'notification';
+    } else if (type === "error"){
+        notif.className = 'notification notif-red';
+    }
 
     const msg = document.createElement('span');
     msg.innerText = message;
@@ -100,13 +109,13 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
         notif.appendChild(notifbtn);
     }
 
-    if (notifaudio !== null) {
+    if (notifaudiosrc !== null) {
         const notifaudio = document.createElement('audio');
-        notifaudio.src = notifaudio;
+        notifaudio.src = notifaudiosrc;
         notif.appendChild(notifaudio);
         notifaudio.play();
     }
-  
+
     container.appendChild(notif);
   
     setTimeout(() => {
@@ -117,5 +126,7 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
     }, duration - 500);
 }
 window.addEventListener('DOMContentLoaded', () => {
-    window.electronAPI.onCheckForUpdate();
+    setTimeout(() => {
+        window.electronAPI.onCheckForUpdate();
+    }, 5000);
 });

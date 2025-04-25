@@ -71,12 +71,12 @@ window.electronAPI.onNoUpdateAvailable(() => {
     
 window.electronAPI.onUpdateProgress((event, progress) => {
     console.log(`Progression : ${progress.percent}%`);
-    showNotification("info", `Progression : ${int(progress.percent)}%`, 1000);
+    showNotification("info", `Progression : ${Math.ceil(progress.percent)}%`, 1000);
 });
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("info", "Téléchargement terminé !", 5000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Téléchargement terminé !", 60000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
 });
 
 window.electronAPI.onUpdaterError(() => {

@@ -70,7 +70,7 @@ window.electronAPI.onNoUpdateAvailable(() => {
 });
     
 let showupdatedownloadprogression = false;
-let updatedownloadprogression;
+let updatedownloadprogression = 0;
 window.electronAPI.onUpdateProgress((event, progress) => {
     console.log(`Progression : ${Math.round(progress.percent * 10) / 10}%`);
     updatedownloadprogression = Math.round(progress.percent * 10) / 10
@@ -90,10 +90,13 @@ window.electronAPI.onUpdaterError((event, err) => {
     updateError = true;
     console.log(`Erreur de l'updater : ${err}`);
     showNotification("error", `Erreur de l'updater : ${err}`, 5000, null, null, "/static/sounds/Error.mp3");
+    setTimeout(() => {
+        updateError = false;
+    }, 1000);
 });
 
 function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudiosrc = null) {
-    if (duration !== -1 || type !== "infodownloadprogress") {
+    if (duration !== -1) {
         const minDuration = 1000;
         duration = Math.max(duration, minDuration);
     }
@@ -138,17 +141,18 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
     } else {
         if (type === "infodownloadprogress") {
             const interval = setInterval(() => {
-                msg.innerText = updatedownloadprogression;
-        
+                msg.innerText = `Progression : ${updatedownloadprogression}%`;
                 if (updatedownloadprogression === 100 || updateError === true) {
                     clearInterval(interval);
+                    showupdatedownloadprogression = false;
+                    updateError = false;
+                    setTimeout(() => {
+                        notif.classList.add("delnotification");
+                        setTimeout(() => {
+                            notif.remove();
+                        }, 500);
+                    }, 1000);
                 }
-            }, 500);
-            showupdatedownloadprogression = false;
-            notif.classList.add("delnotification");
-            setTimeout(() => {
-                notif.remove();
-                updateError = false;
             }, 500);
         } else {
             const killbtn = document.createElement('button');

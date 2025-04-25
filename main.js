@@ -199,7 +199,6 @@ ipcMain.on('restart-app', () => {
 
 ipcMain.on('check-for-update', () => {
   autoUpdater.checkForUpdates();
-  win.webContents.send("updater-error");
 });
 
 app.on("window-all-closed", () => {

@@ -69,29 +69,39 @@ window.electronAPI.onNoUpdateAvailable(() => {
     showNotification("info", "Aucune mise a jour disponible !", 2000, null, null, "/static/sounds/Notification.mp3");
 });
     
+let showupdatedownloadprogression = false;
+let updatedownloadprogression;
 window.electronAPI.onUpdateProgress((event, progress) => {
-    console.log(`Progression : ${progress.percent}%`);
-    showNotification("info", `Progression : ${Math.ceil(progress.percent)}%`, 1000);
+    console.log(`Progression : ${Math.round(progress.percent * 10) / 10}%`);
+    updatedownloadprogression = Math.round(progress.percent * 10) / 10
+    if (showupdatedownloadprogression === false) {
+        showupdatedownloadprogression = true;
+        showNotification("infodownloadprogress", `Progression : ${Math.round(progress.percent * 10) / 10}%`, -1);
+    }
 });
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("info", "Téléchargement terminé !", 60000, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Téléchargement terminé !", -1, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
 });
 
-window.electronAPI.onUpdaterError(() => {
-    console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("error", "Erreur de l'updater", 4000, null, null, "/static/sounds/Error.mp3");
+let updateError = false;
+window.electronAPI.onUpdaterError((event, err) => {
+    updateError = true;
+    console.log(`Erreur de l'updater : ${err}`);
+    showNotification("error", `Erreur de l'updater : ${err}`, 5000, null, null, "/static/sounds/Error.mp3");
 });
 
 function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudiosrc = null) {
-    const minDuration = 1000;
-    duration = Math.max(duration, minDuration);
+    if (duration !== -1 || type !== "infodownloadprogress") {
+        const minDuration = 1000;
+        duration = Math.max(duration, minDuration);
+    }
 
     const container = document.getElementById('notifications-container');
   
     const notif = document.createElement('div');
-    if (type === "info") {
+    if (type === "info" || type === "infodownloadprogress") {
         notif.className = 'notification';
     } else if (type === "error"){
         notif.className = 'notification notif-red';
@@ -117,13 +127,42 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
     }
 
     container.appendChild(notif);
-  
-    setTimeout(() => {
-        notif.classList.add("delnotification");
+    
+    if (duration !== -1) {
         setTimeout(() => {
-            notif.remove();
-        }, 500);
-    }, duration - 500);
+            notif.classList.add("delnotification");
+            setTimeout(() => {
+                notif.remove();
+            }, 500);
+        }, duration - 500);
+    } else {
+        if (type === "infodownloadprogress") {
+            const interval = setInterval(() => {
+                msg.innerText = updatedownloadprogression;
+        
+                if (updatedownloadprogression === 100 || updateError === true) {
+                    clearInterval(interval);
+                }
+            }, 500);
+            showupdatedownloadprogression = false;
+            notif.classList.add("delnotification");
+            setTimeout(() => {
+                notif.remove();
+                updateError = false;
+            }, 500);
+        } else {
+            const killbtn = document.createElement('button');
+            killbtn.className = 'notification-button';
+            killbtn.innerText = "A la sortie";
+            killbtn.onclick = () => {
+                notif.classList.add("delnotification");
+                setTimeout(() => {
+                    notif.remove();
+                }, 500);
+            }
+            notif.appendChild(killbtn);
+        }
+    }
 }
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {

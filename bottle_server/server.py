@@ -89,7 +89,6 @@ def modifier_cache(cle, valeur, mainkey):
     cachecontent[mainkey].append({cle: valeur})
     if not modifiercache:
         modifiercache = True
-        print("modif cache call")
         threading.Thread(target=modifier_cachefile, daemon=True).start()
 
 def convertimage(filepath, size, cache_part):
@@ -116,7 +115,7 @@ def convertimage(filepath, size, cache_part):
             modifier_cache(filepath, newname, cache_part)
 
     except Exception as e:
-        print(f"Erreur lors de la conversion {e}")
+        raise HTTPResponse((f"Erreur lors de la conversion {e}"), status=500)
 
 """
 Cette fonction permet de faire une liste de tout les fichiers se trouvant dans les dossiers a scanner 
@@ -193,6 +192,7 @@ route qui permet d'afficher les parametres et de configurer les preferences de l
 """
 @route('/settings', method=["GET", "POST"]) 
 def settings():
+    global cachecontent
     iframereload = False
     reloadexplorer = False
     hdrs = []
@@ -206,7 +206,6 @@ def settings():
                         hdrs.append(f)
     except FileNotFoundError as e:
         hdrs = []
-        print("Erreur :", e)
     hdr = lire_config().get("3Dviewerhdrname", "")
     if hdr not in hdrs:
         modifier_config("3Dviewerhdrname", "")
@@ -226,7 +225,6 @@ def settings():
             reloadexplorer = True
     
     elif action == "del_repertoire":
-        print(request.forms.get("dir_delete"))
         delete = str(urlsafe_b64decode(request.forms.get("dir_delete").encode("ascii")).decode("utf-8").replace("\\", "/"))
         if delete and delete in dirconfig:
             dirconfig.remove(delete)
@@ -258,6 +256,12 @@ def settings():
             modifier_config("3Dviewerhdrname", hdrselect)
             hdr = lire_config().get("3Dviewerhdrname", None)
             iframereload = True
+    
+    elif action == "delete_cache":
+        cachecontent = DONNEES_CACHE
+        modifier_cachefile()
+        for filename in os.listdir(cache_folder):
+            os.remove(os.path.join(cache_folder, filename))
 
     if ignoreunknownfiles == False:
         iuf = ""
@@ -285,7 +289,6 @@ def textures_files(b64path):
     types = ["tif", "tiff", "tga", "dds", "exr"]
 
     if extension in types:
-        print(file_path)
         threading.Thread(target=convertimage, args=(file_path, -1, "cache"), daemon=True).start()
 
         while True:
@@ -408,14 +411,12 @@ def getaudiofile(b64path):
             newname = (newname + ".mp3")
 
             cache_path = os.path.join(cache_folder, newname)
-            print(file_path)
 
             ffmpeg.input(file_path).output(cache_path, audio_bitrate='192k').run(overwrite_output=True, cmd=ffmpeg_path)
             modifier_cache(file_path, newname, "audio_cache")
             return static_file(newname, root=cache_folder)
         except ffmpeg.Error as e:
-            print(f"Erreur FFmpeg : {e}")
-            raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=404)
+            raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=500)
     return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
 
 @route("/ping")

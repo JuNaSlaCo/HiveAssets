@@ -24,8 +24,8 @@
             scandirbutton.addEventListener('click', () => {
             window.parent.postMessage({ action: 'open-folder-dialog' }, '*');
             });
-            const restartappbutton = document.getElementById('check-for-update');
-            restartappbutton.addEventListener('click', () => {
+            const checkforupdate = document.getElementById('check-for-update');
+            checkforupdate.addEventListener('click', () => {
             window.parent.postMessage({ action: 'check-for-update' }, '*');
             });
         });
@@ -40,6 +40,9 @@
         function delrep(chemin){
             const del = document.getElementById('delr');
             del.value = chemin
+        }
+        function cache_deleted() {
+            window.parent.postMessage({ action: 'cache_deleted' }, '*');
         }
     </script>
 </head>
@@ -89,9 +92,13 @@
             </li>
         </ul>
         <button type="submit" name="action" value="save_options">Sauvegarder</button>
+        <br>
+        <p>OS : {{os}}</p>
+        <p>Threads number : {{NUM_WORKERS}}</p>
+        <button id="check-for-update">Check for update</button>
+        <br>
+        <br>
+        <button type="submit" name="action" value="delete_cache" onclick="cache_deleted()">Supprimer le cache</button>
     </form>
-    <p>OS : {{os}}</p>
-    <p>Threads number : {{NUM_WORKERS}}</p>
-    <button id="check-for-update">Check for update</button>
 </body>
 </html>

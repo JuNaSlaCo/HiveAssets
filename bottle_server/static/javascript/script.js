@@ -39,13 +39,13 @@ window.addEventListener('message', (event) => {
     if (event.data.action === 'open-folder-dialog') {
         window.electronAPI.openFolderDialog();
     }
-    if (event.data.action === 'restart-app') {
-        window.electronAPI.restartApp();
-    }
     if (event.data.action === 'check-for-update') {
         window.electronAPI.onCheckForUpdate();
     }
-  });
+    if (event.data.action === 'cache_deleted') {
+        showNotification("info", "Le cache a été vidé.", 5000, null, null, "/static/sounds/Notification.mp3")
+    }
+});
 
 window.electronAPI.onFolderSelected((repPath) => {
     console.info(repPath)
@@ -57,16 +57,16 @@ window.electronAPI.onFolderSelected((repPath) => {
 function refreshPreview(img) {
     setTimeout(() => {
         img.src = img.src;
-    }, 1500);
+    }, 5000);
 }
 window.electronAPI.onUpdateAvailable(() => {
     console.log("Update disponible !");
-    showNotification("info", "Mise a jour disponible !", 2000, null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Mise a jour disponible !", 5000, null, null, "/static/sounds/Notification.mp3");
 });
     
 window.electronAPI.onNoUpdateAvailable(() => {
     console.log("Aucune mise a jour disponible !");
-    showNotification("info", "Aucune mise a jour disponible !", 2000, null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Aucune mise a jour disponible !", 5000, null, null, "/static/sounds/Notification.mp3");
 });
     
 let showupdatedownloadprogression = false;
@@ -173,3 +173,4 @@ window.addEventListener('DOMContentLoaded', () => {
         window.electronAPI.onCheckForUpdate();
     }, 5000);
 });
+

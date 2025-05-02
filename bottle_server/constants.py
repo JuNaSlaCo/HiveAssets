@@ -49,7 +49,8 @@ DEFAULT_CONFIG = {
         "scan_directory": [],
         "3Dviewerhdrname": "BaseHDR.hdr",
         "ignoreunknownfiles": True,
-        "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"]
+        "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"],
+        "locales": "fr_FR"
 }
 # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
 DONNEES_SCAN = { 

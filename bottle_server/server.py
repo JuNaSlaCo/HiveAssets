@@ -15,6 +15,8 @@ from queue import Queue
 
 queue = Queue()
 
+# Définition des fonctions
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
 
@@ -47,7 +49,7 @@ def worker():
 for loop in range(NUM_WORKERS):
     threading.Thread(target=worker, daemon=True).start()
 
-# Définition des fonctions
+
 
 # Cette fonction crée le fichier de scan si il n'existe pas
 def creer_scanfile(): 

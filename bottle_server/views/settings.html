@@ -48,8 +48,8 @@
 </head>
 <body>
     <form action="/settings" method="post">
-        <h2>Dossiers a scanner :</h2>
-        <input id="scandirectory" name="repertoire" type="button" value="Ajouter un dossier" />
+        <h2>{{getlocale("translations.settings.scandir")}}</h2>
+        <input id="scandirectory" name="repertoire" type="button" value="{{getlocale("translations.settings.adddirbutton")}}" />
         <input id="repertoirepath" name="repertoirepath" type="text" readonly hidden/>
 
         <button type="submit" name="action" value="add_repertoire" id="adddirectorytoconfig" hidden></button>
@@ -58,13 +58,13 @@
             <li>
                 <p>{{f}}</p>
                 <button type="submit" name="action" value="del_repertoire" onclick='delrep("{{urlsafe_b64encode(f.encode("utf-8")).decode("ascii")}}")'>
-                    Supprimer
+                    {{getlocale("translations.settings.delete")}}
                 </button>
             </li>
             % end
             <input id="delr" type="hidden" name="dir_delete" value="">
         </ul>
-        <h2>Options du viewer 3D :</h2>
+        <h2>{{getlocale("translations.settings.3dviewoption")}}</h2>
         <select name="select_hdr">
             % for f in hdrs:
                 % if f == hdr:
@@ -74,31 +74,41 @@
                 % end
             % end
             % if hdrs == "":
-            <option value="">Aucun HDR installé</option>
+            <option value="">{{getlocale("translations.settings.nohdrinstall")}}</option>
             % end
             % if hdr == "":
-            <option value="" selected>Aucun HDR selectionné</option>
+            <option value="" selected>{{getlocale("translations.settings.nohdrselect")}}</option>
             % end
         </select>
-        <button type="submit" name="action" value="remove_hdr">Retirer</button>
+        <button type="submit" name="action" value="remove_hdr">{{getlocale("translations.settings.takeoff")}}</button>
         <h2 style="display: none;">Gestion des filtres :</h2>
         <h3 style="display: none;">Taille des textures :</h3>
-        <h2>Options globales :</h2>
+        <h2>{{getlocale("translations.settings.appoptions")}}</h2>
+        <p>{{getlocale("translations.settings.locale")}} :</p>
+        <select name="select_locale">
+            % for f in getlocales():
+                % if f == locale:
+            <option value="{{f}}" selected>{{f}}</option>
+                % else :
+            <option value="{{f}}">{{f}}</option>
+                % end
+            % end
+        </select>
         <ul>
             <li>
                 <input type="hidden" name="ignoreunknownfiles" value="False">
                 <input type="checkbox" name="ignoreunknownfiles" value="True" {{iuf}}>
-                <label>Ignorer les fichiers inconnus (ignore les fichiers de types inconnus lors du scan des fichiers)</label>
+                <label>{{getlocale("translations.settings.ignoreunknownfiles")}}</label>
             </li>
         </ul>
-        <button type="submit" name="action" value="save_options">Sauvegarder</button>
+        <button type="submit" name="action" value="save_options">{{getlocale("translations.settings.save")}}</button>
         <br>
-        <p>OS : {{os}}</p>
-        <p>Threads number : {{NUM_WORKERS}}</p>
-        <button id="check-for-update">Check for update</button>
+        <p>{{getlocale("translations.settings.os")}} {{os}}</p>
+        <p>{{getlocale("translations.settings.threadsnumber")}} {{NUM_WORKERS}}</p>
+        <button id="check-for-update">{{getlocale("translations.settings.checkforupdates")}}</button>
         <br>
         <br>
-        <button type="submit" name="action" value="delete_cache" onclick="cache_deleted()">Supprimer le cache</button>
+        <button type="submit" name="action" value="delete_cache" onclick="cache_deleted()">{{getlocale("translations.settings.deletecache")}}</button>
     </form>
 </body>
 </html>

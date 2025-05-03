@@ -18,7 +18,7 @@ def verif_fichier_config():
                 config = json.load(f)
             except json.JSONDecodeError:
                 json.dump(DEFAULT_CONFIG, f, indent=4)
-                config = DEFAULT_CONFIG.copy()
+                config = DEFAULT_CONFIG
         maj = False
         for key, value in DEFAULT_CONFIG.items():
             if key not in config:

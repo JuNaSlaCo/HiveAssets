@@ -18,6 +18,8 @@ ffmpeg_path = os.getenv("FFMPEG_PATH")
 modifoncache = True
 modifiercache = False
 cachecontent = {}
+locale = {}
+locales_dir = os.path.join(static_dir, "locales")
 # Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",
@@ -50,7 +52,7 @@ DEFAULT_CONFIG = {
         "3Dviewerhdrname": "BaseHDR.hdr",
         "ignoreunknownfiles": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"],
-        "locales": "fr_FR"
+        "locale": "fr_FR"
 }
 # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
 DONNEES_SCAN = { 

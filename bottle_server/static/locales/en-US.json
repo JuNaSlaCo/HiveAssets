@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "language": "en",
+    "languageName": "English",
+    "author": "JuNaSlaCo",
+    "lastUpdated": "2025-05-03"
+  },
+  "translations": {
+    "main": {
+      "reload": "Reload",
+      "settings": "⚙Settings",
+      "filters": "Filters",
+      "assetstypes": "Assets types",
+      "filestypes": "Files types",
+      "size": "Size",
+      "applyfilters": "Apply filters",
+      "searchbar": "Where is my Asset ?"
+    },
+    "errors": {
+    },
+    "settings": {
+      "scandir": "Dossier(s) a scanner",
+      "adddirbutton": "Ajouter un dossier",
+      "delete": "Delete",
+      "3dviewoption": "Options du viewer 3D",
+      "nohdrinstall": "Aucun HDR installé",
+      "nohdrselect": "Aucun HDR selectionné",
+      "takeoff": "Take off",
+      "appoptions": "Options de l'application",
+      "locale" : "Langues",
+      "ignoreunknownfiles": "Ignore unknown files (Supprime les fichiers inconnus de l'explorateur)",
+      "save": "Save",
+      "os": "Système d'exploitation :",
+      "threadsnumber": "Threads number :",
+      "checkforupdates": "Check for updates",
+      "deletecache": "Remove cache"
+    }
+  }
+}

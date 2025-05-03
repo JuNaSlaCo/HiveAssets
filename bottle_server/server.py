@@ -49,7 +49,32 @@ def worker():
 for loop in range(NUM_WORKERS):
     threading.Thread(target=worker, daemon=True).start()
 
+def loadlocale():
+    global locale
+    setlocale = lire_config().get("locale")
+    print(os.path.join(locales_dir, f"{setlocale}.json"))
+    with open(os.path.join(static_dir, "locales", f"{setlocale}.json"), "r", encoding="utf-8") as f:
+        try:
+            out = json.load(f)
+        except json.JSONDecodeError as e:
+            print(e)
+        locale = out
 
+def getlocale(loc):
+    cache = locale
+    for l in loc.split("."):
+        cache = cache[l]
+    return cache
+
+def getlocales():
+    locales = []
+    if os.listdir(locales_dir) != "":
+            for f in os.listdir(locales_dir):
+                file_extension = f.lower().split(".")[-1]
+                if file_extension == "json":
+                    if os.path.isfile(os.path.join(locales_dir, f)):
+                        locales.append(f.split(".")[0])
+    return locales
 
 # Cette fonction crée le fichier de scan si il n'existe pas
 def creer_scanfile(): 
@@ -139,6 +164,7 @@ def liste_des_fichiers():
 
 # Autre code
 verif_fichier_config()
+loadlocale()
 if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
         with open(fichier_cache, "w", encoding="utf-8") as f:
             json.dump(DONNEES_CACHE, f, indent=4)
@@ -155,7 +181,7 @@ def home():
     file_list = liste_des_fichiers()
     search_query = request.forms.get('search_query') 
     if not search_query:
-        return template("home.html", liste_des_fichiers = file_list, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
+        return template("home.html", liste_des_fichiers = file_list, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
     else:
         fich_trouv=[]
         for f in file_list:
@@ -163,7 +189,7 @@ def home():
                 fich_trouv.append(f)
         if fich_trouv == []:
             fich_trouv = file_list
-        return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES)
+        return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
 
 """
 route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
@@ -252,12 +278,17 @@ def settings():
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)
         modifier_config("ignoreunknownfiles", bool(returnignoreunknownfiles == 'True'))
         ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
+        selectlocale = request.forms.get("select_locale", False)
 
         hdrselect = request.forms.get("select_hdr")
         if hdrselect and hdrselect in hdrs:
             modifier_config("3Dviewerhdrname", hdrselect)
             hdr = lire_config().get("3Dviewerhdrname", None)
             iframereload = True
+        if selectlocale != lire_config().get("locale"):
+            modifier_config("locale", selectlocale)
+            loadlocale()
+            reloadexplorer = True
     
     elif action == "delete_cache":
         cachecontent = DONNEES_CACHE
@@ -268,7 +299,7 @@ def settings():
     if ignoreunknownfiles == False:
         iuf = ""
 
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS)
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS, getlocale = getlocale, getlocales = getlocales, locale = lire_config().get("locale"))
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie

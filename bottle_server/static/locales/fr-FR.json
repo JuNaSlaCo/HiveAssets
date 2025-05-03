@@ -1,37 +1,39 @@
 {
-    "meta": {
-      "language": "fr",
-      "languageName": "Français",
-      "author": "JuNaSlaCo",
-      "lastUpdated": "2025-05-02"
+  "meta": {
+    "language": "fr",
+    "languageName": "Français",
+    "author": "JuNaSlaCo",
+    "lastUpdated": "2025-05-02"
+  },
+  "translations": {
+    "main": {
+      "reload": "Recharger",
+      "settings": "⚙Paramètres",
+      "filters": "Filtres",
+      "assetstypes": "Types d'assets",
+      "filestypes": "Types de fichiers",
+      "size": "Taille",
+      "applyfilters": "Appliquer les filtres",
+      "searchbar": "Ou est mon Asset ?"
     },
-    "translations": {
-      "main": {
-        "reload": "Recharger",
-        "settings": "Paramètres",
-        "filters": "Filtres",
-        "assetstypes": "Types d'assets",
-        "filetype": "Types de fichiers",
-        "size": "Taille",
-        "applyfilters": "Appliquer les filtres",
-        "searchbar": "Ou est mon Asset ?"
-      },
-      "errors": {
-      },
-      "settings": {
-        "scandir": "Dossier(s) a scanner :",
-        "adddirbutton": "Ajouter un dossier",
-        "delete": "Supprimer",
-        "3dviewoption": "Options du viewer 3D :",
-        "takeoff": "Retirer",
-        "appoptions": "Options de l'application :",
-        "ignoreunknownfiles": "Ignorer les fichiers inconnus (ignore les fichiers de types inconnus lors du scan des fichiers)",
-        "save": "Sauvegarder",
-        "os": "Système d'exploitation :",
-        "threadsnumber": "Nombre de threads :",
-        "checkforupdates": "Vérifier les mises a jours",
-        "deletecache": "Supprimer le cache"
-      }
+    "errors": {
+    },
+    "settings": {
+      "scandir": "Dossier(s) a scanner",
+      "adddirbutton": "Ajouter un dossier",
+      "delete": "Supprimer",
+      "3dviewoption": "Options du viewer 3D",
+      "nohdrinstall": "Aucun HDR installé",
+      "nohdrselect": "Aucun HDR selectionné",
+      "takeoff": "Retirer",
+      "appoptions": "Options de l'application",
+      "locale" : "Langues",
+      "ignoreunknownfiles": "Ignorer les fichiers inconnus (Supprime les fichiers inconnus de l'explorateur)",
+      "save": "Sauvegarder",
+      "os": "Système d'exploitation :",
+      "threadsnumber": "Nombre de threads :",
+      "checkforupdates": "Vérifier les mises a jours",
+      "deletecache": "Supprimer le cache"
     }
   }
-  
+}

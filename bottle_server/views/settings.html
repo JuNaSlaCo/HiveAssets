@@ -28,6 +28,11 @@
             checkforupdate.addEventListener('click', () => {
             window.parent.postMessage({ action: 'check-for-update' }, '*');
             });
+            % if checkforupdates == True:
+            setTimeout(() => {
+                window.parent.postMessage({ action: 'check-for-update' }, '*');
+            }, 1000);
+            % end
         });
         window.addEventListener('message', (event) => {
             console.info(event)

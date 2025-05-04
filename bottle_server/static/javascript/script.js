@@ -168,9 +168,3 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
         }
     }
 }
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        window.electronAPI.onCheckForUpdate();
-    }, 5000);
-});
-

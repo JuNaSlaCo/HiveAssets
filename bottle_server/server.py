@@ -220,9 +220,10 @@ route qui permet d'afficher les parametres et de configurer les preferences de l
 """
 @route('/settings', method=["GET", "POST"]) 
 def settings():
-    global cachecontent
+    global cachecontent, checkforupdates
     iframereload = False
     reloadexplorer = False
+    checkforupdate = False
     hdrs = []
     environmentos = lire_config().get("os", None)
     try:
@@ -299,7 +300,11 @@ def settings():
     if ignoreunknownfiles == False:
         iuf = ""
 
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS, getlocale = getlocale, getlocales = getlocales, locale = lire_config().get("locale"))
+    if checkforupdates == True:
+        checkforupdates = False
+        checkforupdate = True
+
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS, getlocale = getlocale, getlocales = getlocales, locale = lire_config().get("locale"), checkforupdates = checkforupdate)
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie

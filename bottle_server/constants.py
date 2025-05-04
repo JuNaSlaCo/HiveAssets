@@ -20,6 +20,7 @@ modifiercache = False
 cachecontent = {}
 locale = {}
 locales_dir = os.path.join(static_dir, "locales")
+checkforupdates = True
 # Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",

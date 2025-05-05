@@ -31,7 +31,7 @@
             % if checkforupdates == True:
             setTimeout(() => {
                 window.parent.postMessage({ action: 'check-for-update' }, '*');
-            }, 1000);
+            }, 2500);
             % end
         });
         window.addEventListener('message', (event) => {

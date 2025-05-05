@@ -16,6 +16,7 @@ eggs/
 .eggs/
 lib/
 .vscode/
+.idea/
 node_modules/
 lib64/
 parts/

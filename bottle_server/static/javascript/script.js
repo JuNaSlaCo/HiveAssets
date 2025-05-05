@@ -61,12 +61,12 @@ function refreshPreview(img) {
 }
 window.electronAPI.onUpdateAvailable(() => {
     console.log("Update disponible !");
-    showNotification("info", "Mise a jour disponible !", 5000, null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Mise a jour disponible !", 5000, null, null, "notifsound");
 });
     
 window.electronAPI.onNoUpdateAvailable(() => {
     console.log("Aucune mise a jour disponible !");
-    showNotification("info", "Aucune mise a jour disponible !", 5000, null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Aucune mise a jour disponible !", 5000, null, null, "notifsound");
 });
     
 let showupdatedownloadprogression = false;
@@ -82,20 +82,20 @@ window.electronAPI.onUpdateProgress((event, progress) => {
     
 window.electronAPI.onUpdateDownloaded(() => {
     console.log("Téléchargement terminé, prêt à redémarrer !");
-    showNotification("info", "Téléchargement terminé !", -1, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "/static/sounds/Notification.mp3");
+    showNotification("info", "Téléchargement terminé !", -1, () => {window.electronAPI.restartApp();}, "Redémarrer maintenant", null, null, "notifsound");
 });
 
 let updateError = false;
 window.electronAPI.onUpdaterError((event, err) => {
     updateError = true;
     console.log(`Erreur de l'updater : ${err}`);
-    showNotification("error", `Erreur de l'updater : ${err}`, 5000, null, null, "/static/sounds/Error.mp3");
+    showNotification("error", `Erreur de l'updater : ${err}`, 5000, null, null, "notiferror");
     setTimeout(() => {
         updateError = false;
     }, 1000);
 });
 
-function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudiosrc = null) {
+function showNotification(type, message, duration = 5000, callbutton = null, callbuttonname = null, notifaudioid = null) {
     if (duration !== -1) {
         const minDuration = 1000;
         duration = Math.max(duration, minDuration);
@@ -122,11 +122,12 @@ function showNotification(type, message, duration = 5000, callbutton = null, cal
         notif.appendChild(notifbtn);
     }
 
-    if (notifaudiosrc !== null) {
-        const notifaudio = document.createElement('audio');
-        notifaudio.src = notifaudiosrc;
-        notif.appendChild(notifaudio);
-        notifaudio.play();
+    if (notifaudioid !== null) {
+        const audio = document.getElementById(notifaudioid);
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(e => console.error("Erreur de lecture audio :", e));
+        }
     }
 
     container.appendChild(notif);

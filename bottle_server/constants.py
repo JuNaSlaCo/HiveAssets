@@ -10,10 +10,10 @@ fichier_config = os.path.join(dossier_config, "config.json")
 fichier_scan = os.path.join(dossier_config, "scan.json")
 fichier_cache = os.path.join(dossier_config, "cache.json")
 cache_folder = os.path.join(dossier_config, "cache")
-hdr_folder = os.path.join(dossier_config, "hdr")
+hdri_folder = os.path.join(dossier_config, "hdri")
 curdir = os.path.dirname(__file__)
 static_dir = os.path.join(curdir, "static")
-hdr_dir = os.path.join(static_dir, "3dviewer", "hdr")
+hdri_dir = os.path.join(static_dir, "3dviewer", "hdri")
 ffmpeg_path = os.getenv("FFMPEG_PATH")
 modifoncache = True
 modifiercache = False
@@ -50,10 +50,10 @@ TYPES_DE_FICHIERS = {
 DEFAULT_CONFIG = {
         "os": system,
         "scan_directory": [],
-        "3Dviewerhdrname": "BaseHDR.hdr",
+        "3Dviewerhdriname": "BaseHDRI.hdr",
         "ignoreunknownfiles": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"],
-        "locale": "fr_FR"
+        "locale": "fr-FR"
 }
 # Ici est défini la configuration du fichier de scan, il n'est pas utile pour le moment
 DONNEES_SCAN = { 

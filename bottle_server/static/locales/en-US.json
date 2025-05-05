@@ -19,12 +19,12 @@
     "errors": {
     },
     "settings": {
-      "scandir": "DirectoryOrDirectories to scan",
+      "scandir": "Directory Or Directories to scan",
       "adddirbutton": "Add a Directory",
       "delete": "Delete",
       "3dviewoption": "Option of the 3DViewer",
-      "nonehdrinstalled": "None HDR is installed ",
-      "nonehdrselected": "None HDR is selected",
+      "nonehdriinstalled": "None environment is installed",
+      "nonehdriselected": "None environment is selected",
       "takeoff": "Take off",
       "appoptions": "Options of the application",
       "locale" : "Languages",

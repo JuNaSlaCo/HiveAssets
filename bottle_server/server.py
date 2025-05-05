@@ -199,12 +199,12 @@ route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
 def model_loader_iframe(type, b64path):
     type = urlsafe_b64decode(type.encode("ascii")).decode("utf-8").replace("\\", "/")
     file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
-    hdr = lire_config().get("3Dviewerhdrname", "")
+    hdri = lire_config().get("3Dviewerhdriname", "")
     if os.path.basename(file_path) == 'LOGO':
         file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
-    if not os.path.exists(os.path.join(hdr_dir, hdr)):
-        modifier_config("3Dviewerhdrname", "")
-        hdr = ""
+    if not os.path.exists(os.path.join(hdri_dir, hdri)):
+        modifier_config("3Dviewerhdriname", "")
+        hdri = ""
     if type == "Texture":
         texture = file_path
         model = ""
@@ -212,7 +212,7 @@ def model_loader_iframe(type, b64path):
         texture = ""
         model = file_path
     typef = type
-    return template("model_loader.html", hdr = hdr, model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
+    return template("model_loader.html", hdri = hdri, model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
 
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
@@ -224,21 +224,21 @@ def settings():
     iframereload = False
     reloadexplorer = False
     checkforupdate = False
-    hdrs = []
+    hdris = []
     environmentos = lire_config().get("os", None)
     try:
-        if os.listdir(hdr_dir) != "":
-            for f in os.listdir(hdr_dir):
+        if os.listdir(hdri_dir) != "":
+            for f in os.listdir(hdri_dir):
                 file_extension = f.lower().split(".")[-1]
                 if file_extension == "hdr" or file_extension == "hdri":
-                    if os.path.isfile(os.path.join(hdr_dir, f)):
-                        hdrs.append(f)
+                    if os.path.isfile(os.path.join(hdri_dir, f)):
+                        hdris.append(f)
     except FileNotFoundError as e:
-        hdrs = []
-    hdr = lire_config().get("3Dviewerhdrname", "")
-    if hdr not in hdrs:
-        modifier_config("3Dviewerhdrname", "")
-        hdr = ""
+        hdris = []
+    hdri = lire_config().get("3Dviewerhdriname", "")
+    if hdri not in hdris:
+        modifier_config("3Dviewerhdriname", "")
+        hdri = ""
     ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
     dirconfig = list(lire_config().get("scan_directory", []))
     iuf = "checked"
@@ -260,19 +260,19 @@ def settings():
             modifier_config("scan_directory", dirconfig)
             reloadexplorer = True
 
-    elif action == "install_hdr":
-        modifier_config("3Dviewerhdrname", "")
-        hdr = ""
+    elif action == "install_hdri":
+        modifier_config("3Dviewerhdriname", "")
+        hdri = ""
         iframereload = True
 
-    elif action == "uninstall_hdr":
-        modifier_config("3Dviewerhdrname", "")
-        hdr = ""
+    elif action == "uninstall_hdri":
+        modifier_config("3Dviewerhdriname", "")
+        hdri = ""
         iframereload = True
 
-    elif action == "remove_hdr":
-        modifier_config("3Dviewerhdrname", "")
-        hdr = ""
+    elif action == "remove_hdri":
+        modifier_config("3Dviewerhdriname", "")
+        hdri = ""
         iframereload = True
 
     elif action == "save_options":
@@ -281,10 +281,10 @@ def settings():
         ignoreunknownfiles = lire_config().get("ignoreunknownfiles", True)
         selectlocale = request.forms.get("select_locale", False)
 
-        hdrselect = request.forms.get("select_hdr")
-        if hdrselect and hdrselect in hdrs:
-            modifier_config("3Dviewerhdrname", hdrselect)
-            hdr = lire_config().get("3Dviewerhdrname", None)
+        hdriselect = request.forms.get("select_hdri")
+        if hdriselect and hdriselect in hdris:
+            modifier_config("3Dviewerhdriname", hdriselect)
+            hdri = lire_config().get("3Dviewerhdriname", None)
             iframereload = True
         if selectlocale != lire_config().get("locale"):
             modifier_config("locale", selectlocale)
@@ -304,7 +304,7 @@ def settings():
         checkforupdates = False
         checkforupdate = True
 
-    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdrs = hdrs, hdr = hdr, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS, getlocale = getlocale, getlocales = getlocales, locale = lire_config().get("locale"), checkforupdates = checkforupdate)
+    return template("settings.html", scan_dir = dirconfig, os = environmentos, hdris = hdris, hdri = hdri, iuf = iuf, iframereload = iframereload, reloadexplorer = reloadexplorer, NUM_WORKERS = NUM_WORKERS, getlocale = getlocale, getlocales = getlocales, locale = lire_config().get("locale"), checkforupdates = checkforupdate)
 
 """"
 route qui permet de renvoyer l'image originale demandée ou l'image convertie

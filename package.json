@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "JuNaSlaCo",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "description": "HiveAssets",
   "devDependencies": {
     "electron": "^35.1.2",
@@ -30,8 +30,8 @@
     ],
     "extraResources": [
       {
-        "from": "bottle_server/dist/server.exe",
-        "to": "bottle_server/server.exe"
+        "from": "bottle_server/dist/HASRV.exe",
+        "to": "bottle_server/HASRV.exe"
       },
       {
         "from": "build_assets/icon.png",

@@ -7,6 +7,19 @@ const kill = require('tree-kill');
 const log = require("electron-log");
 const enDev = !app.isPackaged;
 let ffmpegPath = require('ffmpeg-static');
+const InstLock = app.requestSingleInstanceLock();
+
+if (!InstLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (win) {
+      if (win.isMinimized()) {
+        win.restore();
+      }
+      win.focus();
+    }
+  });
 
 if (ffmpegPath.includes('app.asar')) {
   ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
@@ -211,3 +224,4 @@ app.on("window-all-closed", () => {
     };
   };
 });
+}

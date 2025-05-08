@@ -201,19 +201,14 @@ def gethdri():
     name = lire_config().get("3Dviewerhdriname", "")
     if '%HiveAssets%' in name:
         if os.path.exists(os.path.join(hdri_dir, name)):
-            print('return 1')
             return static_file(name, root=hdri_dir)
         elif os.path.exists(os.path.join(hdri_folder, name)):
-            print('return caca')
             return static_file(name, root=hdri_folder)
         else:
-            print('return 4')
             return static_file('%HiveAssets%DefaultHDRI.hdr', root=hdri_dir)
     elif os.path.exists(os.path.join(hdri_folder, name)):
-        print('return 5')
         return static_file(name, root=hdri_folder)
     else:
-        print("final return")
         return static_file('%HiveAssets%DefaultHDRI.hdr', root=hdri_dir)
 
 """
@@ -483,6 +478,25 @@ def getaudiofile(b64path):
         except ffmpeg.Error as e:
             raise HTTPResponse((f"Erreur FFmpeg : {e}"), status=500)
     return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
+
+@route("/uploadhdri", method="POST")
+def uploadhdri():
+    print('start')
+    upload = request.files.get('file')
+    print('5')
+    if not upload:
+        print("1")
+        return "Aucun fichier reçu"
+    
+    extension = upload.filename.lower().split('.')[-1]
+    types = ["hdr", "hdri"]
+
+    if extension not in types:
+        print("2")
+        return "Mauvaise extension"
+    print("3")
+    upload.save(os.path.join(hdri_folder, upload.filename), overwrite=True)
+    return f"Fichier {upload.filename} sauvegardé avec succès."
 
 @route("/ping")
 def ping():

@@ -26,6 +26,7 @@
       "nonehdriinstalled": "None environment is installed",
       "nonehdriselected": "None environment is selected",
       "takeoff": "Take off",
+      "addhdri": "Add environment file",
       "appoptions": "Options of the application",
       "locale" : "Languages",
       "ignoreunknownfiles": "Ignore unknown files (Delete unknown files of the explorer)",

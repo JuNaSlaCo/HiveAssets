@@ -2,13 +2,15 @@
 #Auteurs : Judicaël Lenglet, Ewan Jannot, Joan Molle, Maël Pouvreau
 from constants import *
 import json, os
-def verif_fichier_config(): 
+def verif_data_files(): 
     """
     Cette fonction vérifie si les dossiers du logiciel existent, 
     elle vérifie aussi si le fichier de configuration existe et est a jour, elle le met a jour si il manque des données. 
     """    
     os.makedirs(dossier_config, exist_ok=True)
     os.makedirs(cache_folder, exist_ok=True)
+    os.makedirs(hdri_folder, exist_ok=True)
+    os.makedirs(themes_folder, exist_ok=True)
     if not os.path.exists(fichier_config):
         with open(fichier_config, "w", encoding="utf-8") as f:
             json.dump(DEFAULT_CONFIG, f, indent=4)
@@ -28,6 +30,9 @@ def verif_fichier_config():
             with open(fichier_config, "w", encoding="utf-8") as f:
                 json.dump(config, f, indent=4)
             print("Fichier de configuration mis a jour !")
+    if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
+        with open(fichier_cache, "w", encoding="utf-8") as f:
+            json.dump(DONNEES_CACHE, f, indent=4)
 
 def lire_config(): 
     """

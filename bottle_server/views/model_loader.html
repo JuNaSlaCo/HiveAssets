@@ -40,10 +40,9 @@
 
             scene = new THREE.Scene();
 
-            % if hdri != "":
+            % if "hdri" != "":
                 new RGBELoader()
-                    .setPath('/static/3dviewer/hdri/')
-                    .load('{{hdri.replace("'", "\\'")}}', function (texture) {
+                    .load(('/gethdri?ts=' + Date.now()), function (texture) {
                         texture.mapping = THREE.EquirectangularReflectionMapping;
                         scene.background = texture;
                         scene.environment = texture;

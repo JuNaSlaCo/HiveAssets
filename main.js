@@ -25,10 +25,10 @@ if (ffmpegPath.includes('app.asar')) {
   ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
 };
 if (enDev) {
-  serverPath = path.join(__dirname, 'bottle_server', 'dist', 'server.exe');
+  serverPath = path.join(__dirname, 'bottle_server', 'dist', 'HASRV.exe');
   defaulticon = path.join(__dirname, 'build_assets', 'icon.png');
 } else {
-  serverPath = path.join(process.resourcesPath, 'bottle_server', 'server.exe');
+  serverPath = path.join(process.resourcesPath, 'bottle_server', 'HASRV.exe');
   defaulticon = path.join(process.resourcesPath, 'icon.png');
 }
 

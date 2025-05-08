@@ -11,6 +11,7 @@ fichier_scan = os.path.join(dossier_config, "scan.json")
 fichier_cache = os.path.join(dossier_config, "cache.json")
 cache_folder = os.path.join(dossier_config, "cache")
 hdri_folder = os.path.join(dossier_config, "hdri")
+themes_folder = os.path.join(dossier_config, "themes")
 curdir = os.path.dirname(__file__)
 static_dir = os.path.join(curdir, "static")
 hdri_dir = os.path.join(static_dir, "3dviewer", "hdri")
@@ -46,11 +47,11 @@ TYPES_DE_FICHIERS = {
     "flac": "Sound Waves",
     "aac": "Sound Waves"
 }
- # Ici est défini la configuration par défaut du logiciel
+# Ici est défini la configuration par défaut du logiciel
 DEFAULT_CONFIG = {
         "os": system,
         "scan_directory": [],
-        "3Dviewerhdriname": "BaseHDRI.hdr",
+        "3Dviewerhdriname": "%HiveAssets%DefaultHDRI.hdr",
         "ignoreunknownfiles": True,
         "filter_texturessizes": ["128 x 128", "256 x 256", "512 x 512", "1024 x 1024", "2048 x 2048"],
         "locale": "fr-FR"
@@ -61,10 +62,10 @@ DONNEES_SCAN = {
     "Mesh" : [],
     "Unknown" : []
 }
-# Ici est défini le type d'assets qui peut s'afficher dqns les filtres, n'est pas utile pour le moment
+# Ici est défini le type d'assets qui peut s'afficher dans les filtres, n'est pas utile pour le moment
 ASSETS_TYPES = ["Textures", "Models", "Sound Waves"]
- # Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles
- # avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement. 
+# Ici est défini le fichier servant de cache au logiciel, il garde en mémoire les textures non compatibles
+# avec les navigateurs qui ont étés converties par le programme afin de les afficher correctement. 
 DONNEES_CACHE = {
     "preview_cache": [],
     "cache" : [],

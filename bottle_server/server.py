@@ -90,7 +90,7 @@ def lire_cachefile():
                 try: 
                     out = json.load(f)
                 except json.JSONDecodeError:
-                    verif_fichier_config()
+                    verif_data_files()
                     out = json.load(f)
                 modifoncache = False
                 cachecontent = out
@@ -98,6 +98,7 @@ def lire_cachefile():
         else:
             return cachecontent
     else:
+        verif_data_files()
         return dict()
 
 # Ces fonctions permettent de modifier le cache ainsi que le fichier de cache
@@ -105,8 +106,13 @@ def modifier_cachefile():
     global modifiercache, cachecontent, modifoncache
     with threading.Lock():
         time.sleep(5)
-        with open(fichier_cache, "w", encoding="utf-8") as f:
-            json.dump(cachecontent, f, indent=4)
+        if not os.path.exists(fichier_config):
+            verif_data_files()
+            with open(fichier_cache, "w", encoding="utf-8") as f:
+                json.dump(cachecontent, f, indent=4)
+        else :
+            with open(fichier_cache, "w", encoding="utf-8") as f:
+                json.dump(cachecontent, f, indent=4)
         modifiercache = False
         modifoncache = True
 
@@ -117,6 +123,8 @@ def modifier_cache(cle, valeur, mainkey):
     if not modifiercache:
         modifiercache = True
         threading.Thread(target=modifier_cachefile, daemon=True).start()
+
+# Cette fonction permet de convertir des images
 
 def convertimage(filepath, size, cache_part):
     try:
@@ -149,7 +157,7 @@ Cette fonction permet de faire une liste de tout les fichiers se trouvant dans l
 (Ces dossiers sont enregistrés dans le fichier de configuration)
 :return: renvoit la liste des fichiers present dans le dossier
 """
-def liste_des_fichiers(): 
+def liste_des_fichiers():
     list = []
     for dir in lire_config().get("scan_directory", []):
         for chemin, dir, fichiers in os.walk(dir):
@@ -163,11 +171,8 @@ def liste_des_fichiers():
     return list
 
 # Autre code
-verif_fichier_config()
+verif_data_files()
 loadlocale()
-if not os.path.exists(fichier_cache): # Vérifie si le fichier de cache existe
-        with open(fichier_cache, "w", encoding="utf-8") as f:
-            json.dump(DONNEES_CACHE, f, indent=4)
 
 # Définition des routes
 
@@ -190,6 +195,26 @@ def home():
         if fich_trouv == []:
             fich_trouv = file_list
         return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
+    
+@route('/gethdri')
+def gethdri():
+    name = lire_config().get("3Dviewerhdriname", "")
+    if '%HiveAssets%' in name:
+        if os.path.exists(os.path.join(hdri_dir, name)):
+            print('return 1')
+            return static_file(name, root=hdri_dir)
+        elif os.path.exists(os.path.join(hdri_folder, name)):
+            print('return caca')
+            return static_file(name, root=hdri_folder)
+        else:
+            print('return 4')
+            return static_file('%HiveAssets%DefaultHDRI.hdr', root=hdri_dir)
+    elif os.path.exists(os.path.join(hdri_folder, name)):
+        print('return 5')
+        return static_file(name, root=hdri_folder)
+    else:
+        print("final return")
+        return static_file('%HiveAssets%DefaultHDRI.hdr', root=hdri_dir)
 
 """
 route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
@@ -199,12 +224,8 @@ route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
 def model_loader_iframe(type, b64path):
     type = urlsafe_b64decode(type.encode("ascii")).decode("utf-8").replace("\\", "/")
     file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
-    hdri = lire_config().get("3Dviewerhdriname", "")
-    if os.path.basename(file_path) == 'LOGO':
+    if os.path.basename(file_path) == '%LOGO%':
         file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
-    if not os.path.exists(os.path.join(hdri_dir, hdri)):
-        modifier_config("3Dviewerhdriname", "")
-        hdri = ""
     if type == "Texture":
         texture = file_path
         model = ""
@@ -212,7 +233,7 @@ def model_loader_iframe(type, b64path):
         texture = ""
         model = file_path
     typef = type
-    return template("model_loader.html", hdri = hdri, model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
+    return template("model_loader.html", model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
 
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
@@ -232,6 +253,12 @@ def settings():
                 file_extension = f.lower().split(".")[-1]
                 if file_extension == "hdr" or file_extension == "hdri":
                     if os.path.isfile(os.path.join(hdri_dir, f)):
+                        hdris.append(f)
+        if os.listdir(hdri_folder) != "":
+            for f in os.listdir(hdri_folder):
+                file_extension = f.lower().split(".")[-1]
+                if file_extension == "hdr" or file_extension == "hdri":
+                    if os.path.isfile(os.path.join(hdri_folder, f)):
                         hdris.append(f)
     except FileNotFoundError as e:
         hdris = []

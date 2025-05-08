@@ -12,7 +12,7 @@
     <audio id="notiferror" src="/static/sounds/Error.mp3" preload="auto"></audio>
     <audio id="notifsound" src="/static/sounds/Notification.mp3" preload="auto"></audio>
     <div id="notifications-container"></div>
-    <iframe class="viewer" id="viewer" title="Model Loader Iframe" src='/model_loader_iframe/{{urlsafe_b64encode("Texture".encode("utf-8")).decode("ascii")}}/{{urlsafe_b64encode("LOGO".encode("utf-8")).decode("ascii")}}'></iframe>
+    <iframe class="viewer" id="viewer" title="Model Loader Iframe" src='/model_loader_iframe/{{urlsafe_b64encode("Texture".encode("utf-8")).decode("ascii")}}/{{urlsafe_b64encode("%LOGO%".encode("utf-8")).decode("ascii")}}'></iframe>
     <div class="main">
         <div class="filtres" id="filtres"> <!--partie des filtres -->
             <form action="update" method="post">

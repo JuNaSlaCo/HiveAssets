@@ -73,9 +73,9 @@
         <select name="select_hdri">
             % for f in hdris:
                 % if f == hdri:
-            <option value="{{f}}" selected>{{f}}</option>
+            <option value="{{f}}" selected>{{f.replace("%HiveAssets%", "")}}</option>
                 % else:
-            <option value="{{f}}">{{f}}</option>
+            <option value="{{f}}">{{f.replace("%HiveAssets%", "")}}</option>
                 % end
             % end
             % if hdris == "":

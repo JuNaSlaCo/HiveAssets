@@ -108,7 +108,9 @@
         </select>
         <button type="submit" name="action" value="remove_hdri">{{getlocale("translations.settings.takeoff")}}</button>
         <br>
-        <input id="uploadhdri" type="file" accept=".hdr,.hdri" value="{{getlocale("translations.settings.addhdri")}}" onchange="uploadhdrionserver()">
+        <br>
+        <input id="uploadhdri" type="file" accept=".hdr,.hdri" onchange="uploadhdrionserver()" hidden>
+        <button type="button" onclick="document.getElementById('uploadhdri').click()">{{getlocale("translations.settings.addhdri")}}</button>
         <h2 style="display: none;">Gestion des filtres :</h2>
         <h3 style="display: none;">Taille des textures :</h3>
         <h2>{{getlocale("translations.settings.appoptions")}}</h2>

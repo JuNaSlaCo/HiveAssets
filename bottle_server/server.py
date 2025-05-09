@@ -228,7 +228,11 @@ def model_loader_iframe(type, b64path):
         texture = ""
         model = file_path
     typef = type
-    return template("model_loader.html", model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef)
+    if lire_config().get("3Dviewerhdriname", "") != "":
+        hdri = "True"
+    else :
+        hdri = "False"
+    return template("model_loader.html", model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef, hdri = hdri)
 
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs

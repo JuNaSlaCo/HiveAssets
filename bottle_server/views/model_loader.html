@@ -40,7 +40,7 @@
 
             scene = new THREE.Scene();
 
-            % if "hdri" != "":
+            % if hdri != "False":
                 new RGBELoader()
                     .load(('/gethdri?ts=' + Date.now()), function (texture) {
                         texture.mapping = THREE.EquirectangularReflectionMapping;

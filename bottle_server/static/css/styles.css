@@ -23,6 +23,14 @@
     font-size: medium;
     outline: none;
 }
+
+.explorer, .settings, .filtres {
+    height: 100vh;
+    overflow-y: scroll;
+    
+}
+
+
 .but{
     border: none;
     padding-right: 2px;
@@ -38,6 +46,7 @@ html, body {
     display: flex;
     flex-direction: column;
     color: white;
+    scrollbar-color: gray black;
 }
 .viewer {
     height: 55vh;

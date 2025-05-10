@@ -19,12 +19,12 @@
     "errors": {
     },
     "settings": {
-      "scandir": "Directory Or Directories to scan",
-      "adddirbutton": "Add a Directory",
+      "scandir": "Directories to scan",
+      "adddirbutton": "Add Directory",
       "delete": "Delete",
       "3dviewoption": "Option of the 3DViewer",
-      "nonehdriinstalled": "None environment is installed",
-      "nonehdriselected": "None environment is selected",
+      "nonehdriinstalled": "No environment installed",
+      "nonehdriselected": "No environment selected",
       "takeoff": "Take off",
       "addhdri": "Add environment file",
       "appoptions": "Options of the application",

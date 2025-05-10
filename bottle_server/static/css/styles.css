@@ -27,8 +27,6 @@
 .explorer{
     height: 100vh;
     overflow-y: scroll;
-    scrollbar-color: gray rgb(0, 0, 0); /* Couleur de la barre et du fond */
-    scrollbar-width: thin; /* Réduit la largeur de la scrollbar */
 }
 
 ::-webkit-scrollbar {

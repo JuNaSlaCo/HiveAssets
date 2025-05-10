@@ -33,6 +33,6 @@ body{
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    width: 12px; /* Taille plus grande au survol */
+    width: 12px;
     background-color: lightgray;
 }

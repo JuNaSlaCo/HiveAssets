@@ -18,7 +18,8 @@ body{
 }
 
 ::-webkit-scrollbar {
-    width: 2px;
+    width: 8px;
+    height: 30%;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -29,4 +30,9 @@ body{
 ::-webkit-scrollbar-track {
     background-color: rgb(0, 0, 0);
     border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    width: 12px; /* Taille plus grande au survol */
+    background-color: lightgray;
 }

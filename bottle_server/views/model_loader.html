@@ -36,7 +36,6 @@
             document.body.appendChild(container);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 20);
-            camera.position.set(-1.8, 0.6, 2.7);
 
             scene = new THREE.Scene();
 
@@ -53,15 +52,16 @@
                         const ambientLight = new THREE.AmbientLight(0x404040, 10);
                         scene.add(ambientLight);
                         const material = new THREE.MeshLambertMaterial({
-				            map: new THREE.TextureLoader().load('/texturesfiles/{{texture.replace("'", "\\'")}}')
+				            map: new THREE.TextureLoader().load('/assets/{{texture.replace("'", "\\'")}}')
                         });
                         const geometry = new THREE.BoxGeometry(1, 1, 1);
                         cube = new THREE.Mesh(geometry, material);
                         scene.add(cube);
+                        centerCameraOnModel(cube);
                         render();
                         % else:
                         render();
-                        loadModel('/texturesfiles/{{model.replace("'", "\\'")}}');
+                        loadModel('/assets/{{model.replace("'", "\\'")}}');
                         % end
                     });
             % elif typef == "Texture":
@@ -73,15 +73,16 @@
                     const ambientLight = new THREE.AmbientLight(0x404040, 10);
                     scene.add(ambientLight);
                     const material = new THREE.MeshLambertMaterial({
-				        map: new THREE.TextureLoader().load('/texturesfiles/{{texture.replace("'", "\\'")}}')
+				        map: new THREE.TextureLoader().load('/assets/{{texture.replace("'", "\\'")}}')
                     });
                     const geometry = new THREE.BoxGeometry(1, 1, 1);
                     cube = new THREE.Mesh(geometry, material);
                     scene.add(cube);
+                    centerCameraOnModel(cube)
             % else:
                 new RGBELoader()
                     scene.background = new THREE.Color().setHex(0x000);
-                    loadModel('/texturesfiles/{{model.replace("'", "\\'")}}');
+                    loadModel('/assets/{{model.replace("'", "\\'")}}');
                     const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
                     directionalLight.position.set(5, 10, 5);
                     scene.add(directionalLight);
@@ -131,7 +132,9 @@
         }
 
         function loadModel(url) {
-            const extension = url.split('.').pop().toLowerCase();
+            // const extension = url.split('.').pop().toLowerCase();
+
+            const extension = "{{ext}}";
             let loader;
 
             switch (extension) {
@@ -158,22 +161,6 @@
                     return;
             }
 
-            function centerCameraOnModel(model) {
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const fov = camera.fov * (Math.PI / 180);
-                let cameraDistance = Math.abs(maxDim / Math.sin(fov / 2));
-
-                const direction = new THREE.Vector3(1, 1, 1).normalize();
-                camera.position.copy(center.clone().add(direction.multiplyScalar(cameraDistance)));
-                camera.lookAt(center);
-
-                controls.target.copy(center);
-                controls.update();
-            }
-
             loader.load(url, (object) => {
             let model;
                 if (object.scene) {
@@ -192,6 +179,22 @@
                 render();
             });
 
+        }
+
+        function centerCameraOnModel(model) {
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = camera.fov * (Math.PI / 180);
+            let cameraDistance = Math.abs(maxDim / Math.sin(fov / 2));
+
+            const direction = new THREE.Vector3(1, 0.5, 1).normalize();
+            camera.position.copy(center.clone().add(direction.multiplyScalar(cameraDistance)));
+            camera.lookAt(center);
+
+            controls.target.copy(center);
+            controls.update();
         }
 
         function onWindowResize() {

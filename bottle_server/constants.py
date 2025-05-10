@@ -22,6 +22,7 @@ cachecontent = {}
 locale = {}
 locales_dir = os.path.join(static_dir, "locales")
 checkforupdates = True
+viewer_cached_model_path = ""
 # Ici sont défini tout les fichiers qui sont pris en charge par le logiciel
 TYPES_DE_FICHIERS = { 
     "jpg": "Texture",

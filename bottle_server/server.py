@@ -5,7 +5,7 @@ ici se trouve toutes les routes ainsi que des fonctions
 """
 
 # les importations necessaire au bon fonctionnement du site
-import os, json, random, string, ffmpeg, threading, time, subprocess
+import os, json, random, string, ffmpeg, threading, time, subprocess, binascii
 from bottle import route, run, template, request, static_file, HTTPResponse
 from PIL import Image
 from constants import *
@@ -215,24 +215,25 @@ def gethdri():
 route qui permet d'afficher le viewer 3D pour visualiser les assets visuels
 :return:sort soit le model soit la texture demander
 """
-@route('/model_loader_iframe/<type>/<b64path>') 
+@route('/model_loader_iframe/<type>/<b64path>')
 def model_loader_iframe(type, b64path):
     type = urlsafe_b64decode(type.encode("ascii")).decode("utf-8").replace("\\", "/")
     file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
     if os.path.basename(file_path) == '%LOGO%':
-        file_path = os.path.join(static_dir, "icons", "HiveAssets.png").replace("\\", "/")
+        file_path = os.path.join(static_dir, "3dviewer", "Model", "HiveAssetsLogo.gltf").replace("\\", "/")
     if type == "Texture":
         texture = file_path
         model = ""
     else:
         texture = ""
         model = file_path
+    ext = file_path.replace("\\", "/").split('.')[-1]
     typef = type
     if lire_config().get("3Dviewerhdriname", "") != "":
         hdri = "True"
     else :
         hdri = "False"
-    return template("model_loader.html", model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef, hdri = hdri)
+    return template("model_loader.html", model = urlsafe_b64encode(model.encode("utf-8")).decode("ascii"), texture = urlsafe_b64encode(texture.encode("utf-8")).decode("ascii"), typef = typef, hdri = hdri, ext = ext)
 
 """
 route qui permet d'afficher les parametres et de configurer les preferences de l'utilisateurs
@@ -336,23 +337,36 @@ def settings():
 route qui permet de renvoyer l'image originale demandée ou l'image convertie
 :return: renvoi l'image original ou convertie pqr le programme
 """
-@route('/texturesfiles/<b64path>')
-def textures_files(b64path):
-    file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
+@route('/assets/<b64path>')
+def assets(b64path):
+    global viewer_cached_model_path
+    print(viewer_cached_model_path)
+    try:
+        file_path = urlsafe_b64decode(b64path.encode("ascii")).decode("utf-8").replace("\\", "/")
+        if file_path != "":
+            viewer_cached_model_path = file_path
+    except Exception:
+        try:
+            file_path = os.path.join(viewer_cached_model_path.replace("\\", "/"), '..', b64path).replace("\\", "/")
+            print(file_path)
+        except Exception:
+            return HTTPResponse("Chemin non valide", status=400)
 
     if not os.path.exists(file_path):
-        raise HTTPResponse("non trouvé", status=404)
-    for l in lire_cachefile().get("cache", list()):
-        if file_path in l:
-            for k, v in l.items():
-                if not os.path.exists(os.path.join(cache_folder, v)):
-                    break
-                else:
-                    return static_file(v, root=cache_folder)
-    extension = file_path.lower().split('.')[-1]
-    types = ["tif", "tiff", "tga", "dds", "exr"]
+        return HTTPResponse("Fichier non trouvé", status=404)
 
-    if extension in types:
+    extension = file_path.lower().split('.')[-1]
+    
+    cached_types = ["tif", "tiff", "tga", "dds", "exr"]
+    model_types = ["obj", "fbx", "stl", "ply", "gltf", "glb", "dae", "bin"]
+    texture_types = ["png", "jpg", "jpeg", "webp"]
+
+    if extension in cached_types:
+        for l in lire_cachefile().get("cache", list()):
+            if file_path in l:
+                for k, v in l.items():
+                    if os.path.exists(os.path.join(cache_folder, v)):
+                        return static_file(v, root=cache_folder)
         threading.Thread(target=convertimage, args=(file_path, -1, "cache"), daemon=True).start()
 
         while True:
@@ -362,9 +376,27 @@ def textures_files(b64path):
                         cached_path = os.path.join(cache_folder, v)
                         if os.path.exists(cached_path):
                             return static_file(v, root=cache_folder)
-            time.sleep(0.5)
+            time.sleep(1)
 
-    return static_file(os.path.basename(file_path), root=os.path.dirname(file_path))
+    elif extension in model_types + texture_types:
+        mimetypes = {
+            "obj": "text/plain",
+            "fbx": "application/octet-stream",
+            "stl": "model/stl",
+            "ply": "application/octet-stream",
+            "gltf": "model/gltf+json",
+            "glb": "model/gltf-binary",
+            "dae": "model/vnd.collada+xml",
+            "bin": "application/octet-stream",
+            "png": "image/png",
+            "jpg": "image/jpeg",
+            "jpeg": "image/jpeg",
+            "webp": "image/webp",
+        }
+        mime = mimetypes.get(extension, "application/octet-stream")
+        return static_file(os.path.basename(file_path), root=os.path.dirname(file_path), mimetype=mime)
+
+    return HTTPResponse("Extension non prise en charge", status=415)
 
 """
 route qui permet d'obtenir un fichier grâce a son lien
@@ -485,20 +517,15 @@ def getaudiofile(b64path):
 
 @route("/uploadhdri", method="POST")
 def uploadhdri():
-    print('start')
     upload = request.files.get('file')
-    print('5')
     if not upload:
-        print("1")
         return "Aucun fichier reçu"
     
     extension = upload.filename.lower().split('.')[-1]
     types = ["hdr", "hdri"]
 
     if extension not in types:
-        print("2")
         return "Mauvaise extension"
-    print("3")
     upload.save(os.path.join(hdri_folder, upload.filename), overwrite=True)
     return f"Fichier {upload.filename} sauvegardé avec succès."
 

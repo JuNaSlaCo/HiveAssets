@@ -44,7 +44,7 @@ def lire_config():
             try: 
                 out = json.load(f)
             except json.JSONDecodeError:
-                verif_fichier_config()
+                verif_data_files()
                 out = json.load(f)
             return out
     else:

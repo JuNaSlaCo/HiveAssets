@@ -58,18 +58,52 @@
             })
             .then(response => response.text())
             .then(result => {
-                //showNotification("info", 'Le fichier a été envoyé !', 5000, null, null, "notiferror");
+                //showNotification("info", 'Le fichier a été envoyé !', 5000, null, null, "notifsound");
+                location.reload();
             })
             .catch(error => {
-                //showNotification("error", `Erreur lors de l'envoi : ${error}`, 5000, null, null, "notifsound");
+                //showNotification("error", `Erreur lors de l'envoi : ${error}`, 5000, null, null, "notiferror");
             });
         };
+        function deletehdri() {
+            const selectedFile = document.getElementById('select_hdri').value;
+            if (selectedFile === "None" || !selectedFile || selectedFile.includes("%HiveAssets%")) {
+                //showNotification("error", `Aucun fichier selectionné`, 5000, null, null, "notiferror");
+                return;
+            }
+
+            const formdata = new FormData();
+            formdata.append('filename', selectedFile);
+
+            fetch('/removehdri', {
+                method: 'POST',
+                body: formdata
+            })
+            .then(response => response.text())
+            .then(result => {
+                //showNotification("info", result, 5000, null, null, "notifsound");
+                location.reload(); // Pour mettre à jour la liste
+            })
+            .catch(error => {
+                //showNotification("error", `Erreur lors de la suppression : ${error}`, 5000, null, null, "notiferror");
+            });
+        }
+        function hdrilistchange() {
+            const selectedFile = document.getElementById('select_hdri').value;
+            console.log(selectedFile)
+            const button = document.getElementById('removehdri')
+            if (selectedFile.includes("%HiveAssets%") || selectedFile === "None") {
+                button.hidden = true
+            } else {
+                button.hidden = false
+            }
+        }
     </script>
 </head>
 <body>
     <form action="/settings" method="post">
         <h2>{{getlocale("translations.settings.scandir")}}</h2>
-        <input id="scandirectory" name="repertoire" type="button" value="{{getlocale("translations.settings.adddirbutton")}}" />
+        <input id="scandirectory" name="repertoire" type="button" value="{{getlocale("translations.settings.adddirbutton")}}"/>
         <input id="repertoirepath" name="repertoirepath" type="text" readonly hidden/>
 
         <button type="submit" name="action" value="add_repertoire" id="adddirectorytoconfig" hidden></button>
@@ -85,7 +119,12 @@
             <input id="delr" type="hidden" name="dir_delete" value="">
         </ul>
         <h2>{{getlocale("translations.settings.3dviewoption")}}</h2>
-        <select name="select_hdri">
+        <select id="select_hdri" name="select_hdri" onchange="hdrilistchange()">
+            % if hdri == "":
+            <option value="None" selected>{{getlocale("translations.settings.none")}}</option>
+            % else:
+            <option value="None">{{getlocale("translations.settings.none")}}</option>
+            % end
             % for f in hdris:
                 % if f == hdri:
             <option value="{{f}}" selected>{{f.replace("%HiveAssets%", "")}}</option>
@@ -96,15 +135,16 @@
             % if hdris == "":
             <option value="">{{getlocale("translations.settings.nonehdriinstalled")}}</option>
             % end
-            % if hdri == "":
-            <option value="" selected>{{getlocale("translations.settings.nonehdriselected")}}</option>
-            % end
         </select>
-        <button type="submit" name="action" value="remove_hdri">{{getlocale("translations.settings.takeoff")}}</button>
         <br>
         <br>
         <input id="uploadhdri" type="file" accept=".hdr,.hdri" onchange="uploadhdrionserver()" hidden>
         <button type="button" onclick="document.getElementById('uploadhdri').click()">{{getlocale("translations.settings.addhdri")}}</button>
+        <button id="removehdri" type="button" onclick="deletehdri()"
+        % if hdri == "" or "%HiveAssets%" in hdri:
+        hidden
+        %end
+        >{{getlocale("translations.settings.delhdri")}}</button>
         <h2 style="display: none;">Gestion des filtres :</h2>
         <h3 style="display: none;">Taille des textures :</h3>
         <h2>{{getlocale("translations.settings.appoptions")}}</h2>

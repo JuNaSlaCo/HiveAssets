@@ -25,7 +25,7 @@
         import { ColladaLoader } from 'three/addons/loaders/ColladaLoader.js';
         import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-        let camera, scene, renderer;
+        let controls, camera, scene, renderer;
 
         var cube;
 
@@ -40,55 +40,55 @@
             scene = new THREE.Scene();
 
             % if hdri != "False":
-                new RGBELoader()
-                    .load(('/gethdri?ts=' + Date.now()), function (texture) {
-                        texture.mapping = THREE.EquirectangularReflectionMapping;
-                        scene.background = texture;
-                        scene.environment = texture;
-                        % if typef == "Texture":
-                        const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
-                        directionalLight.position.set(5, 10, 5);
-                        scene.add(directionalLight);
-                        const ambientLight = new THREE.AmbientLight(0x404040, 10);
-                        scene.add(ambientLight);
-                        const material = new THREE.MeshLambertMaterial({
-				            map: new THREE.TextureLoader().load('/assets/{{texture.replace("'", "\\'")}}')
-                        });
-                        const geometry = new THREE.BoxGeometry(1, 1, 1);
-                        cube = new THREE.Mesh(geometry, material);
-                        scene.add(cube);
-                        centerCameraOnModel(cube);
-                        render();
-                        % else:
-                        render();
-                        loadModel('/assets/{{model.replace("'", "\\'")}}');
-                        % end
-                    });
-            % elif typef == "Texture":
-                new RGBELoader()
-                    scene.background = new THREE.Color().setHex(0x000);
-                    const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+            new RGBELoader()
+                .load(('/gethdri?ts=' + Date.now()), function (texture) {
+                    texture.mapping = THREE.EquirectangularReflectionMapping;
+                    scene.background = texture;
+                    scene.environment = texture;
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
                     directionalLight.position.set(5, 10, 5);
                     scene.add(directionalLight);
-                    const ambientLight = new THREE.AmbientLight(0x404040, 10);
+                    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
                     scene.add(ambientLight);
+                    % if typef == "Texture":
                     const material = new THREE.MeshLambertMaterial({
 				        map: new THREE.TextureLoader().load('/assets/{{texture.replace("'", "\\'")}}')
                     });
                     const geometry = new THREE.BoxGeometry(1, 1, 1);
                     cube = new THREE.Mesh(geometry, material);
                     scene.add(cube);
-                    centerCameraOnModel(cube)
-            % else:
-                new RGBELoader()
-                    scene.background = new THREE.Color().setHex(0x000);
+                    centerCameraOnModel(cube);
+                    % else:
                     loadModel('/assets/{{model.replace("'", "\\'")}}');
-                    const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
-                    directionalLight.position.set(5, 10, 5);
-                    scene.add(directionalLight);
-                    const ambientLight = new THREE.AmbientLight(0x404040, 100);
-                    scene.add(ambientLight);
-                    
+                    % end
+                });
+            % elif typef == "Texture":
+            scene.background = new THREE.Color().setHex(0x000000);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+            directionalLight.position.set(5, 10, 5);
+            scene.add(directionalLight);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+            scene.add(ambientLight);
+
+            const material = new THREE.MeshLambertMaterial({
+                map: new THREE.TextureLoader().load('/assets/{{texture.replace("'", "\\'")}}')
+            });
+
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+            centerCameraOnModel(cube);
+            % else:
+            new RGBELoader()
+                scene.background = new THREE.Color().setHex(0x000);
+                loadModel('/assets/{{model.replace("'", "\\'")}}');
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+                directionalLight.position.set(5, 10, 5);
+                scene.add(directionalLight);
+                const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+                scene.add(ambientLight);
             % end
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -98,7 +98,9 @@
             renderer.toneMappingExposure = 1;
             container.appendChild(renderer.domElement);
 
-            const controls = new OrbitControls(camera, renderer.domElement);
+
+
+            controls = new OrbitControls(camera, renderer.domElement);
             controls.addEventListener('change', () => {
                 render();
             });
@@ -111,8 +113,6 @@
 
             animate();
         }
-
-        const controls = new OrbitControls(camera, renderer.domElement);
 
         function rescaleModel(model, targetSize = 1.0) {
             const box = new THREE.Box3().setFromObject(model);
@@ -132,8 +132,6 @@
         }
 
         function loadModel(url) {
-            // const extension = url.split('.').pop().toLowerCase();
-
             const extension = "{{ext}}";
             let loader;
 
@@ -187,14 +185,16 @@
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
             const fov = camera.fov * (Math.PI / 180);
-            let cameraDistance = Math.abs(maxDim / Math.sin(fov / 2));
+            let cameraDistance = Math.abs(maxDim / Math.sin(fov / 1.85));
 
-            const direction = new THREE.Vector3(1, 0.5, 1).normalize();
+            const direction = new THREE.Vector3(1, 0.4, 1).normalize();
             camera.position.copy(center.clone().add(direction.multiplyScalar(cameraDistance)));
             camera.lookAt(center);
 
-            controls.target.copy(center);
-            controls.update();
+            if (controls) {
+                controls.target.copy(center);
+                controls.update();
+            }
         }
 
         function onWindowResize() {
@@ -205,7 +205,9 @@
         }
 
         function render() {
-            renderer.render(scene, camera);
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
         }
 
         function animate() {

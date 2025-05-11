@@ -287,21 +287,6 @@ def settings():
             modifier_config("scan_directory", dirconfig)
             reloadexplorer = True
 
-    elif action == "install_hdri":
-        modifier_config("3Dviewerhdriname", "")
-        hdri = ""
-        iframereload = True
-
-    elif action == "uninstall_hdri":
-        modifier_config("3Dviewerhdriname", "")
-        hdri = ""
-        iframereload = True
-
-    elif action == "remove_hdri":
-        modifier_config("3Dviewerhdriname", "")
-        hdri = ""
-        iframereload = True
-
     elif action == "save_options":
         returnignoreunknownfiles = request.forms.get("ignoreunknownfiles", False)
         modifier_config("ignoreunknownfiles", bool(returnignoreunknownfiles == 'True'))
@@ -309,8 +294,13 @@ def settings():
         selectlocale = request.forms.get("select_locale", False)
 
         hdriselect = request.forms.get("select_hdri")
+        print(hdriselect)
         if hdriselect and hdriselect in hdris:
             modifier_config("3Dviewerhdriname", hdriselect)
+            hdri = lire_config().get("3Dviewerhdriname", None)
+            iframereload = True
+        if hdriselect == "None":
+            modifier_config("3Dviewerhdriname", "")
             hdri = lire_config().get("3Dviewerhdriname", None)
             iframereload = True
         if selectlocale != lire_config().get("locale"):
@@ -326,6 +316,9 @@ def settings():
 
     if ignoreunknownfiles == False:
         iuf = ""
+
+    if hdriareremove_reloadviewer == True:
+        iframereload = True
 
     if checkforupdates == True:
         checkforupdates = False
@@ -350,10 +343,10 @@ def assets(b64path):
             file_path = os.path.join(viewer_cached_model_path.replace("\\", "/"), '..', b64path).replace("\\", "/")
             print(file_path)
         except Exception:
-            return HTTPResponse("Chemin non valide", status=400)
+            raise HTTPResponse("Chemin non valide", status=400)
 
     if not os.path.exists(file_path):
-        return HTTPResponse("Fichier non trouvé", status=404)
+        raise HTTPResponse("Fichier non trouvé", status=404)
 
     extension = file_path.lower().split('.')[-1]
     
@@ -528,6 +521,23 @@ def uploadhdri():
         return "Mauvaise extension"
     upload.save(os.path.join(hdri_folder, upload.filename), overwrite=True)
     return f"Fichier {upload.filename} sauvegardé avec succès."
+
+@route("/removehdri", method="POST")
+def removehdri():
+    global hdriareremove_reloadviewer
+    filename = request.forms.get('filename')
+    if not filename:
+        return "Aucun fichier spécifié"
+
+    filepath = os.path.join(hdri_folder, filename)
+    if os.path.exists(filepath):
+        if filename == lire_config().get("3Dviewerhdriname", ""):
+            hdriareremove_reloadviewer = True
+            modifier_config("3Dviewerhdriname", "")
+        os.remove(filepath)
+        raise HTTPResponse("Fichier supprimé avec succès", status=200)
+    else:
+        raise HTTPResponse("Fichier non trouvé", status=404)
 
 @route("/ping")
 def ping():

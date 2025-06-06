@@ -395,7 +395,7 @@ def assets(b64path):
 route qui permet d'obtenir un fichier grâce a son lien
 :return: renvoie un fichier contenu dans le dossier static du programme
 """
-@route('/static/<path:path>/<filename>') 
+@route('/static/<path:path>/<filename>')
 def server_static(path, filename):
     return static_file(filename, root=os.path.join(static_dir, path))
 

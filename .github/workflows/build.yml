@@ -1,20 +1,44 @@
 name: Build & Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (format vX.Y.Z)'
+        required: true
 
 jobs:
   build:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Setup Git identity
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Update package.json version
+      run: |
+        VERSION=${{ github.event.inputs.version }}
+        VERSION_STRIPPED=${VERSION#v}
+        echo "Updating package.json version to $VERSION_STRIPPED"
+        jq ".version = \"$VERSION_STRIPPED\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+
+    - name: Commit updated package.json
+      run: |
+        git add package.json
+        git commit -m "chore: bump version to ${{ github.event.inputs.version }}"
+
+    - name: Create tag from input version
+      run: |
+        git tag ${{ github.event.inputs.version }}
+        git push origin ${{ github.event.inputs.version }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -45,10 +69,9 @@ jobs:
       run: npm run publish
 
     - name: Upload to GitHub Releases
-      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v2
       with:
         files: dist/**/*
-
-    - name: List build output (debug)
-      run: ls -R dist
+        tag_name: ${{ github.event.inputs.version }}
+        name: Release ${{ github.event.inputs.version }}
+        generate_release_notes: true

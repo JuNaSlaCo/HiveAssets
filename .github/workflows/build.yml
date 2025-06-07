@@ -49,23 +49,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update package.json version
-        run: |
-         VERSION=${{ github.event.inputs.version }}
-          VERSION_STRIPPED=${VERSION#v}
-          echo "Updating package.json version to $VERSION_STRIPPED"
-          jq ".version = \"$VERSION_STRIPPED\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
-
-      - name: Commit updated package.json
-        run: |
-          git add package.json
-          git commit -m "chore: bump version to ${{ github.event.inputs.version }}"
-
-      - name: Create tag from input version
-        run: |
-          git tag ${{ github.event.inputs.version }}
-          git push origin ${{ github.event.inputs.version }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

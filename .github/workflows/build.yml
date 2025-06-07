@@ -6,6 +6,9 @@ on:
       version:
         description: 'Version (format vX.Y.Z)'
         required: true
+      release_notes:
+        description: 'Description de la version'
+        required: false
 
 jobs:
   versioning:
@@ -79,3 +82,17 @@ jobs:
 
       - name: Build Electron App
         run: npm run publish
+
+  finalize_release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make draft release public with description
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          body: ${{ github.event.inputs.release_notes }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

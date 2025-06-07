@@ -11,8 +11,10 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout latest commit from main
         uses: actions/checkout@v4
+        with:
+            ref: main
 
       - name: Setup Git
         run: |
@@ -38,11 +40,10 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     steps:
-      - name: Checkout
+      - name: Checkout latest commit from main
         uses: actions/checkout@v4
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        with:
+            ref: main
 
       - name: Setup Git identity
         run: |

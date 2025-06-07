@@ -1,6 +1,6 @@
 {
   "name": "hiveassets",
-  "version": "0.5.6",
+  "version": "0.5.5",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,7 +9,7 @@
     "publish": "electron-builder --p always"
   },
   "keywords": [],
-  "author": "JuNaSlaCo",
+  "author": "JuNaSlaCo <junaslaco@users.github.com>",
   "license": "GPL-3.0-only",
   "description": "HiveAssets",
   "devDependencies": {
@@ -35,7 +35,7 @@
         "to": "bottle_server/HASRV.exe"
       },
       {
-        "from": "bottle_server/dist/mac/HASRV",
+        "from": "bottle_server/dist/darwin/HASRV",
         "to": "bottle_server/HASRV"
       },
       {
@@ -68,7 +68,8 @@
     },
     "mac": {
       "icon": "build_assets/icon.icns",
-      "target": "dmg"
+      "target": "dmg",
+      "identity": null
     },
     "linux": {
       "icon": "build_assets/icon.png",

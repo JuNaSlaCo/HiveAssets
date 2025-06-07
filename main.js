@@ -5,9 +5,12 @@ const path = require('node:path');
 const http = require('http');
 const kill = require('tree-kill');
 const log = require("electron-log");
-const enDev = !app.isPackaged;
+const os = require('os');
 let ffmpegPath = require('ffmpeg-static');
+const enDev = !app.isPackaged;
 const InstLock = app.requestSingleInstanceLock();
+const isWin = os.platform() === 'win32';
+let serverPath, defaulticon;
 
 if (!InstLock) {
   app.quit()
@@ -21,14 +24,18 @@ if (!InstLock) {
     }
   });
 
+const binaryName = isWin ? 'HASRV.exe' : 'HASRV';
+
 if (ffmpegPath.includes('app.asar')) {
   ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked');
 };
 if (enDev) {
-  serverPath = path.join(__dirname, 'bottle_server', 'dist', 'HASRV.exe');
+  console.log("🛠 Mode dev détecté");
+  console.log("✔️ Path serveur Python :", serverPath);
+  serverPath = path.join(__dirname, 'bottle_server', 'dist', isWin ? 'win' : os.platform(), binaryName);
   defaulticon = path.join(__dirname, 'build_assets', 'icon.png');
 } else {
-  serverPath = path.join(process.resourcesPath, 'bottle_server', 'HASRV.exe');
+  serverPath = path.join(process.resourcesPath, 'bottle_server', binaryName);
   defaulticon = path.join(process.resourcesPath, 'icon.png');
 }
 

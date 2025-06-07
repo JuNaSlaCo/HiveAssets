@@ -4,6 +4,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "prebuild": "node scripts/prebuild.js",
     "build": "electron-builder",
     "publish": "electron-builder --p always"
   },
@@ -29,9 +30,17 @@
       "node_modules/ffmpeg-static/**/*"
     ],
     "extraResources": [
-      {
-        "from": "bottle_server/dist/HASRV.exe",
+        {
+        "from": "bottle_server/dist/win/HASRV.exe",
         "to": "bottle_server/HASRV.exe"
+      },
+      {
+        "from": "bottle_server/dist/mac/HASRV",
+        "to": "bottle_server/HASRV"
+      },
+      {
+        "from": "bottle_server/dist/linux/HASRV",
+        "to": "bottle_server/HASRV"
       },
       {
         "from": "build_assets/icon.png",

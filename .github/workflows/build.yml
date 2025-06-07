@@ -79,11 +79,3 @@ jobs:
 
       - name: Build Electron App
         run: npm run publish
-
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/**/*
-          tag_name: ${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
-          generate_release_notes: true

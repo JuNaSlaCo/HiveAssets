@@ -1,8 +1,4 @@
-import os
-import shutil
-import sys
-import subprocess
-import platform
+import os, shutil, subprocess, platform
 
 SCRIPTNAME = "server.py"
 OUTNAME = "HASRV"

@@ -9,6 +9,10 @@ on:
       release_notes:
         description: 'Description de la version'
         required: false
+      is_prerelease:
+        description: 'Est-ce une pre-release ? (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
   versioning:
@@ -30,7 +34,7 @@ jobs:
           VERSION_STRIPPED=${VERSION#v}
           jq ".version = \"$VERSION_STRIPPED\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
           git add package.json
-          git commit -m "chore: bump version to $VERSION"
+          git commit -m "Bump version to $VERSION"
           git tag "$VERSION"
           git push origin HEAD
           git push origin "$VERSION"
@@ -69,7 +73,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install PyInstaller
-        run: pip install pyinstaller
+        run: pip install -r requirements.txt
 
       - name: Build Python server
         run: |
@@ -91,8 +95,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.version }}
           body: ${{ github.event.inputs.release_notes }}
           draft: false
+          prerelease: ${{ github.event.inputs.is_prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

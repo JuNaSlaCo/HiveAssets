@@ -1,6 +1,6 @@
-pillow>=11.1.0
-bottle>=0.13.2
-pyinstaller>=6.12.0
-ffmpeg-python>=0.2.0
-paste>=3.10.1
+pillow
+bottle
+pyinstaller
+ffmpeg-python
+paste
 pywin32; sys_platform == "win32"

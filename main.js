@@ -31,8 +31,8 @@ if (ffmpegPath.includes('app.asar')) {
 };
 
 if (enDev) {
-  console.log("🛠 Mode dev détecté");
-  console.log("✔️ Path serveur Python :", serverPath);
+  console.log("Mode dev detecte");
+  console.log("Path serveur Python :", serverPath);
   serverPath = path.join(__dirname, 'bottle_server', 'dist', isWin ? 'windows' : os.platform(), binaryName);
   console.log(serverPath)
   defaulticon = path.join(__dirname, 'build_assets', 'icon.png');

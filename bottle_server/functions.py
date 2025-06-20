@@ -3,7 +3,7 @@
 from constants import *
 from queue import Queue
 from PIL import Image
-from bottle import HTTPResponse
+from bottle import HTTPResponse, TEMPLATE_PATH
 import json, os, threading, json, time, random, string
 
 queue = Queue()
@@ -49,7 +49,7 @@ def lire_config():
             try: 
                 out = json.load(f)
             except json.JSONDecodeError:
-                verif_data_files()
+                verif_data_files() # On vérifie tout les fichiers car ce n'est pas normal d'obtenir une erreur ici
                 out = json.load(f)
             return out
     else:
@@ -212,3 +212,16 @@ def liste_des_fichiers():
                 elif lire_config().get("ignoreunknownfiles") == False:
                     list.append([file_name, TYPES_DE_FICHIERS.get(file_extension, "Unknown"), (chemin + "\\" + fichier)])
     return list
+
+def liste_des_themes():
+    dirs = []
+    for rep in os.listdir(themes_folder):
+        if os.path.isdir(os.path.join(themes_folder, rep)) and os.path.exists(os.path.join(themes_folder, rep, "home.html")):
+            dirs.append(rep)
+    return dirs
+
+def set_theme():
+    theme_path = "C:\\Users\\Freddy Studio\\.hiveasset\\themes\\Nawe theme\\"
+    if theme_path not in TEMPLATE_PATH:
+        TEMPLATE_PATH.insert(0, theme_path)
+    print("Thème changé :  ", theme_path)

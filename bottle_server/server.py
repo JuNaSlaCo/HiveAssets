@@ -11,7 +11,9 @@ from constants import *
 from functions import *
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
-# Autre code 
+# Autre code
+
+print(liste_des_themes())
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -34,7 +36,7 @@ def home():
     file_list = liste_des_fichiers()
     search_query = request.forms.get('search_query') 
     if not search_query:
-        return template("home.html", liste_des_fichiers = file_list, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
+        return template("home", liste_des_fichiers = file_list, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
     else:
         fich_trouv=[]
         for f in file_list:
@@ -42,10 +44,11 @@ def home():
                 fich_trouv.append(f)
         if fich_trouv == []:
             fich_trouv = file_list
-        return template("home.html", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
+        return template("home", liste_des_fichiers = fich_trouv, files_types = TYPES_DE_FICHIERS, filtertexturessizes = lire_config().get("filter_texturessizes", None), ASSETS_TYPES = ASSETS_TYPES, getlocale = getlocale)
     
 @route('/gethdri')
 def gethdri():
+    set_theme()
     name = lire_config().get("3Dviewerhdriname", "")
     if '%HiveAssets%' in name:
         if os.path.exists(os.path.join(hdri_dir, name)):
@@ -386,6 +389,10 @@ def removehdri():
         raise HTTPResponse("Fichier supprimé avec succès", status=200)
     else:
         raise HTTPResponse("Fichier non trouvé", status=404)
+    
+@route("/theme")
+def theme():
+    pass
 
 @route("/ping")
 def ping():

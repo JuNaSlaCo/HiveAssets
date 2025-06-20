@@ -15,32 +15,32 @@ on:
         default: 'false'
 
 jobs:
-  versioning:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout latest commit from main
-        uses: actions/checkout@v4
-        with:
-            ref: main
+#  versioning:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout latest commit from main
+#        uses: actions/checkout@v4
+#        with:
+#            ref: main
 
-      - name: Setup Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+#      - name: Setup Git
+#        run: |
+#          git config user.name "github-actions[bot]"
+#          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update package.json
-        run: |
-          VERSION=${{ github.event.inputs.version }}
-          VERSION_STRIPPED=${VERSION#v}
-          jq ".version = \"$VERSION_STRIPPED\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
-          git add package.json
-          git commit -m "Bump version to $VERSION"
-          git tag "$VERSION"
-          git push origin HEAD
-          git push origin "$VERSION"
+#      - name: Update package.json
+#        run: |
+#          VERSION=${{ github.event.inputs.version }}
+#          VERSION_STRIPPED=${VERSION#v}
+#          jq ".version = \"$VERSION_STRIPPED\"" package.json > tmp.$$.json && mv tmp.$$.json package.json
+#          git add package.json
+#          git commit -m "Bump version to $VERSION"
+#          git tag "$VERSION"
+#          git push origin HEAD
+#          git push origin "$VERSION"
 
   build:
-    needs: versioning
+    #needs: versioning
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

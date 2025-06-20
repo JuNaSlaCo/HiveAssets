@@ -1,9 +1,4 @@
 model_loader.html linguist-vendored
 installer.nsh linguist-vendored
-build_electron_win.bat linguist-vendored
-build_electron_linux.bat linguist-vendored
-build_electron_mac.bat linguist-vendored
-build_electron_all.bat linguist-vendored
-build_server.bat linguist-vendored
-build_server_electron_win.bat linguist-vendored
+build_HASRV.bat linguist-vendored
 bottle_server/static/javascript/threejs/** linguist-vendored

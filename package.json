@@ -13,7 +13,7 @@
   "license": "GPL-3.0-only",
   "description": "HiveAssets",
   "devDependencies": {
-    "electron": "^35.1.2",
+    "electron": "^35.7.5",
     "electron-builder": "^26.0.12"
   },
   "build": {

@@ -13,8 +13,6 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 # Autre code
 
-print(liste_des_themes())
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
 
@@ -23,6 +21,8 @@ for loop in range(NUM_WORKERS):
 
 verif_data_files()
 loadlocale()
+
+print(liste_des_themes())
 
 # Définition des routes
 

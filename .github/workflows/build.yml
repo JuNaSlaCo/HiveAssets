@@ -1,5 +1,8 @@
 name: Build & Release
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -92,6 +95,8 @@ jobs:
   finalize_release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Make draft release public with description
         uses: softprops/action-gh-release@v2
